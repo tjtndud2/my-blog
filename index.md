@@ -1,5 +1,5 @@
 ---
-layout: home
+layout: default
 title: BLOG
 list_title: 지금까지 쓴 글
 ---
