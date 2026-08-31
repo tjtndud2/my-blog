@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "2026-08-28-git-markdown"
+title: "마크다운 형식"
 date: 2026-08-28
 ---
 
