@@ -444,69 +444,6 @@
             }
         }
 
-        .links-section {
-            margin-top: 50px;
-            padding-top: 40px;
-            border-top: 2px solid #e0e0e0;
-        }
-
-        .links-title {
-            font-size: 1.1em;
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-
-        .link-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .link-btn {
-            padding: 12px 24px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        .link-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .link-btn.secondary {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .link-btn.secondary:hover {
-            background: #e0e0e0;
-        }
-
-        @media (max-width: 600px) {
-            .progress-and-calendar {
-                flex-direction: column;
-                gap: 30px;
-            }
-
-            .calendar {
-                max-width: 100%;
-            }
-        }
-
-        @media (max-width: 1000px) {
-            .progress-and-calendar-visitors {
-                flex-wrap: wrap;
-            }
-        }
-
         @media (max-width: 600px) {
             .container {
                 padding: 30px 20px;
@@ -523,10 +460,6 @@
             .circular-progress {
                 width: 150px;
                 height: 150px;
-            }
-
-            .progress-day {
-                font-size: 2em;
             }
 
             .progress-and-calendar-visitors {
@@ -640,20 +573,41 @@
     </div>
 
     <script>
-        // 날짜 계산
-        const startDate = new Date(2026, 7, 26); // 2026-08-26
-        const endDate = new Date(2027, 1, 16);   // 2027-02-16
-        const today = new Date(2026, 7, 31);    // 2026-08-31
+        // ========== 방문자 통계 (localStorage) ==========
+        let todayVisitors = parseInt(localStorage.getItem('todayVisitors')) || 0;
+        let totalVisitors = parseInt(localStorage.getItem('totalVisitors')) || 0;
+        const lastVisitDate = localStorage.getItem('lastVisitDate');
+        const today = new Date();
+        const todayDate = today.toISOString().split('T')[0];
 
-        // 경과 일수 (시작일 포함)
+        // 새로운 날이면 오늘 방문자 리셋
+        if (lastVisitDate !== todayDate) {
+            todayVisitors = 0;
+            localStorage.setItem('lastVisitDate', todayDate);
+        }
+
+        // 방문할 때마다 +1
+        todayVisitors = todayVisitors + 1;
+        totalVisitors = totalVisitors + 1;
+
+        // localStorage에 저장
+        localStorage.setItem('todayVisitors', todayVisitors);
+        localStorage.setItem('totalVisitors', totalVisitors);
+
+        // 방문자수 표시
+        document.getElementById('todayVisitors').textContent = todayVisitors;
+        document.getElementById('totalVisitors').textContent = totalVisitors;
+
+        // ========== 진행률 계산 ==========
+        const startDate = new Date(2026, 7, 26);
+        const endDate = new Date(2027, 1, 16);
+
         const elapsedTime = today - startDate;
         const elapsedDays = Math.floor(elapsedTime / (1000 * 60 * 60 * 24)) + 1;
 
-        // 전체 일수
         const totalTime = endDate - startDate;
         const totalDays = Math.floor(totalTime / (1000 * 60 * 60 * 24)) + 1;
 
-        // 진행률
         const progressPercent = Math.round((elapsedDays / totalDays) * 100);
 
         // DOM 업데이트
@@ -669,9 +623,9 @@
         circle.style.strokeDasharray = circumference;
         circle.style.strokeDashoffset = offset;
 
-        // 달력 생성
-        let currentYear = 2026;
-        let currentMonth = 7; // 8월 (0부터 시작)
+        // ========== 달력 생성 ==========
+        let currentYear = today.getFullYear();
+        let currentMonth = today.getMonth();
 
         function generateCalendar(year, month) {
             currentYear = year;
@@ -685,7 +639,6 @@
             const calendarDays = document.getElementById('calendarDays');
             calendarDays.innerHTML = '';
 
-            // 헤더 업데이트
             const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
             document.getElementById('calendarHeader').textContent = year + '년 ' + monthNames[month];
 
