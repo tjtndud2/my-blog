@@ -1,0 +1,29 @@
+---
+layout: default
+---
+<a class="back-button" href="{{ '/blog/' | relative_url }}">← 목록으로</a>
+
+<div class="post-detail-header">
+    <h1 class="post-detail-title">{{ page.title }}</h1>
+    <div class="post-detail-meta">
+        <span class="post-meta-item">📅 {{ page.date | date: '%Y년 %-m월 %-d일' }}</span>
+        {% if page.author or site.author %}
+        <span class="post-meta-item">✍️ {{ page.author | default: site.author }}</span>
+        {% endif %}
+        {% for category in page.categories %}
+        <span class="post-meta-item">#{{ category }}</span>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="post-content">
+    {{ content }}
+
+    {% if page.tags.size > 0 %}
+    <div class="post-tags" style="margin-top: 3rem;">
+        {% for tag in page.tags %}
+        <span class="post-tag">#{{ tag }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>

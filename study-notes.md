@@ -1,6 +1,7 @@
 ---
-layout: default
-title: 학습노트
+layout: page
+title: Study Notes
+permalink: /study-notes/
 ---
 
 # 📓 학습노트

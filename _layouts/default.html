@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title and page.url != '/' %}{{ page.title }} · {% endif %}{{ site.title | default: 'Tech Blog' }}</title>
+    {% if page.excerpt %}<meta name="description" content="{{ page.excerpt | strip_html | truncate: 150 }}">{% endif %}
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-inner">
+            <a href="{{ '/' | relative_url }}" class="logo">{{ site.title | default: 'Tech Blog' }}</a>
+            <nav>
+                <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="active"{% endif %}>Home</a>
+                <a href="{{ '/blog/' | relative_url }}"{% if page.url == '/blog/' or page.layout == 'post' %} class="active"{% endif %}>Blog</a>
+                <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} class="active"{% endif %}>About</a>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환">🌙</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main>
+        {{ content }}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; {{ 'now' | date: '%Y' }} {{ site.title | default: 'Tech Blog' }}. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ '/assets/js/script.js' | relative_url }}" defer></script>
+</body>
+</html>

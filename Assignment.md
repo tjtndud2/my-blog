@@ -1,6 +1,7 @@
 ---
-layout: default
-title: 프로젝트
+layout: page
+title: Assignments
+permalink: /assignment/
 ---
 
 # 📋 과제
