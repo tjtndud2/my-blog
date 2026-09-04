@@ -9,19 +9,14 @@ permalink: /blog/
 </div>
 
 <div class="filter-bar">
-    <div class="filter-bar-left">
-        <div class="search-box">
+    <div class="search-box">
             <input type="text" id="searchInput" placeholder="Search" aria-label="글 검색">
-        </div>
-        <div class="search-container">
-            <input type="search" name="q" class="search-input" placeholder="Search" aria-label="글 검색">
-        </div>
-        <div class="filter-tags">
-            <button class="filter-tag active" data-category="all">전체</button>
-            {% for category in site.categories %}
-            <button class="filter-tag" data-category="{{ category[0] }}">{{ category[0] }}</button>
-            {% endfor %}
-        </div>
+    </div>
+    <div class="filter-tags">
+        <button class="filter-tag active" data-category="all">전체</button>
+        {% for category in site.categories %}
+        <button class="filter-tag" data-category="{{ category[0] }}">{{ category[0] }}</button>
+        {% endfor %}
     </div>
     <div class="visitor-box">
         <div class="visitor-stat">
