@@ -10,7 +10,7 @@ permalink: /blog/
 
 <div class="filter-bar">
     <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search" aria-label="글 검색">
+        <input type="search" name="q" class="search-input" placeholder="Search" aria-label="글 검색">
     </div>
     <div class="filter-tags">
         <button class="filter-tag active" data-category="all">전체</button>
