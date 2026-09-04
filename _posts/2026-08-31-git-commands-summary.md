@@ -7,7 +7,7 @@ date: 2026-08-31
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({ startOnLoad: true });</script>
 
-안녕, 이번 주에 Git과 GitHub를 처음 배운 걸 축하해요!
+안녕, 이번 주에 Git과 GitHub를 처음 배운 걸 자축해요!
 오늘은 선생님이 되어서, 이번 주에 배운 내용만 딱 정리해줄게요.
 **저장소 만들기 → 스테이징 → 커밋 → 브랜치 → push/pull/merge → 되돌리기**, 이 순서로 하나씩 볼게요.
 
