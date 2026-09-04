@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About
-subtitle: 저에 대해서 알아보세요
+subtitle: ‼️
 permalink: /about/
 ---
 
@@ -18,4 +18,4 @@ permalink: /about/
 ## 💬 연락처
 
 - Email: tjtndud2@g.eulji.ac.kr
-- GitHub: [github.com/사용자명](https://github.com/)
+- GitHub: [GitHub‼️](https://tjtndud2.github.io/my-blog/)

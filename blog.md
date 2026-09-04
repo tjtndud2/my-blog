@@ -5,13 +5,16 @@ permalink: /blog/
 ---
 
 <div class="posts-header">
-    <h2>모든 포스트</h2>
+    <h2>posts</h2>
 </div>
 
 <div class="filter-bar">
     <div class="filter-bar-left">
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Search" aria-label="글 검색">
+        </div>
+        <div class="search-container">
+            <input type="search" name="q" class="search-input" placeholder="Search" aria-label="글 검색">
         </div>
         <div class="filter-tags">
             <button class="filter-tag active" data-category="all">전체</button>
