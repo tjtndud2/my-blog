@@ -2,6 +2,7 @@
 layout: post
 title: "로컬/원격 브랜치 merge 충돌, 직접 겪고 나서 배운 것"
 date: 2026-08-31 21:00:00 +0900
+section: Study Notes
 categories: [Git]
 tags: [git, merge, conflict, branch]
 ---

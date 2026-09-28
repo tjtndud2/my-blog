@@ -2,9 +2,10 @@
 layout: post
 title: "협업을 대비해 Git 브랜치 전략 비교하고 내 블로그에 맞는 규칙 정하기"
 date: 2026-08-31 20:00:00 +0900
+section: Assignments
 categories: [Git]
 tags: [git, branch-strategy, gitflow, github-flow, collaboration]
-mermaid: true 
+mermaid: true
 ---
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>

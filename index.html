@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Tech Blog</title>
+<script src="./blog-data.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#667eea;--primary-soft:rgba(102,126,234,0.07);--bg:#ffffff;--bg-light:#f8f8f8;--text:#1a1a1a;--text-light:#666666;--border:#e8e8e8;--shadow:0 2px 8px rgba(0,0,0,0.1);--shadow-lg:0 12px 24px rgba(0,0,0,0.08)}
+[data-theme="dark"]{--primary-soft:rgba(102,126,234,0.13);--bg:#0f0f0f;--bg-light:#1a1a1a;--text:#f0f0f0;--text-light:#b0b0b0;--border:#2a2a2a;--shadow:0 2px 8px rgba(0,0,0,0.3);--shadow-lg:0 12px 24px rgba(0,0,0,0.3)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;line-height:1.6}
+a{color:var(--text);text-decoration:none}
+a:hover{color:var(--primary)}
+input::placeholder{color:var(--text-light);letter-spacing:.2px}
+</style>
+</helmet>
+<div style="background:var(--bg);color:var(--text);min-height:100vh;">
+<header style="background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;">
+  <div style="max-width:1200px;margin:0 auto;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">
+    <a href="#" style="font-size:1.5rem;font-weight:700;color:var(--text);white-space:nowrap;flex-shrink:0;">Tech Blog</a>
+    <nav style="display:flex;align-items:center;gap:2rem;">
+      <a href="#" style="position:relative;font-weight:500;color:var(--primary);">Home<span style="position:absolute;left:0;right:0;bottom:-8px;height:2px;background:var(--primary);"></span></a>
+      <a href="blog.html" style="font-weight:500;color:var(--text);transition:color .3s;" style-hover="color:var(--primary);">Blog</a>
+      <a href="guestbook.html" style="font-weight:500;color:var(--text);transition:color .3s;" style-hover="color:var(--primary);">Guestbook</a>
+      <button onClick="{{ toggleTheme }}" aria-label="테마 전환" style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .3s;width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--text);flex-shrink:0;" style-hover="border-color:var(--primary);"><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path></svg></sc-if><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></sc-if></button>
+    </nav>
+  </div>
+</header>
+
+<main style="max-width:1440px;margin:0 auto;padding:3rem 2rem;min-height:calc(100vh - 200px);">
+  <div style="display:grid;grid-template-columns:260px minmax(0,1fr);gap:2.5rem;align-items:start;">
+    <aside ref="{{ asideRef }}" style="position:sticky;top:90px;min-width:0;display:flex;flex-direction:column;gap:1rem;">
+      <div style="background:var(--bg-light);border-radius:12px;padding:.75rem;box-shadow:var(--shadow);color:var(--text);transition:all .3s;display:flex;flex-direction:column;gap:.65rem;" style-hover="box-shadow:var(--shadow-lg);">
+        <a href="https://github.com/tjtndud2" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.8rem;color:var(--text);min-width:0;">
+        <img src="https://github.com/tjtndud2.png" alt="tjtndud2 프로필" width="52" height="52" style="width:52px;height:52px;border-radius:50%;border:2px solid var(--primary);object-fit:cover;flex-shrink:0;background:var(--border);">
+        <div style="display:flex;flex-direction:column;gap:.15rem;min-width:0;">
+          <span style="font-size:1rem;font-weight:700;color:var(--text);white-space:nowrap;">{{ profileName }}</span>
+          <span style="display:flex;align-items:center;gap:.3rem;font-size:.8rem;color:var(--text-light);white-space:nowrap;"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>@tjtndud2</span>
+        </div>
+      </a>
+        <a href="https://music.apple.com/kr/song/big-void/6790844009" target="_blank" rel="noopener" title="오늘의 추천곡" style="display:flex;align-items:center;gap:.45rem;padding:.5rem .6rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.8rem;color:var(--text-light);min-width:0;" style-hover="color:var(--primary);border-color:var(--primary);">
+          <span style="display:flex;color:var(--primary);"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
+          <span style="flex-shrink:0;font-weight:600;white-space:nowrap;">오늘의 추천곡</span>
+          <span style="flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text);">실리카겔 - BIG VOID</span>
+        </a>
+        <a href="https://naver.me/G1wSuBJ6" target="_blank" rel="noopener" title="오늘의 추천 음식" style="display:flex;align-items:center;gap:.45rem;padding:.5rem .6rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.8rem;color:var(--text-light);min-width:0;margin-top:-.3rem;" style-hover="color:var(--primary);border-color:var(--primary);">
+          <span style="display:flex;color:var(--primary);"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M3 11h18a9 9 0 0 1-18 0z"></path><path d="M8 7c0-1 1-1.5 1-2.5M12 7c0-1 1-1.5 1-2.5M16 7c0-1 1-1.5 1-2.5"></path></svg></span>
+          <span style="flex-shrink:0;font-weight:600;white-space:nowrap;">오늘의 추천 음식</span>
+          <span style="flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text);">뼈해장국</span>
+        </a>
+      </div>
+      <section style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.85rem;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
+        <div style="display:flex;align-items:baseline;gap:.5rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);">
+          <h3 style="font-size:1.05rem;font-weight:700;color:var(--text);white-space:nowrap;">Guestbook</h3>
+          <span style="font-size:.8rem;color:var(--text-light);white-space:nowrap;">{{ guestCount }}</span>
+          <a href="guestbook.html" style="margin-left:auto;font-size:.78rem;color:var(--primary);white-space:nowrap;" style-hover="text-decoration:underline;">All</a>
+        </div>
+        <sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ notAsking }}" hint-placeholder-val="{{ true }}">
+            <p style="color:var(--text-light);font-size:.85rem;line-height:1.5;text-wrap:pretty;">GitHub 계정으로 로그인하고 방문 흔적을 남겨주세요.</p>
+            <button onClick="{{ startLogin }}" style="display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:9px 16px;border:none;background:#24292f;color:#fff;border-radius:25px;cursor:pointer;font-size:.88rem;font-weight:600;white-space:nowrap;transition:opacity .3s;" style-hover="opacity:.85;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>GitHub로 로그인</button>
+          </sc-if>
+          <sc-if value="{{ asking }}" hint-placeholder-val="{{ false }}">
+            <form onSubmit="{{ submitLogin }}" style="display:flex;flex-direction:column;gap:.5rem;">
+              <input type="text" value="{{ loginInput }}" onInput="{{ onLoginInput }}" placeholder="GitHub 아이디" aria-label="GitHub 아이디" style="width:100%;padding:9px 16px;border:2px solid var(--primary);border-radius:25px;background:var(--bg-light);color:var(--text);font-size:.88rem;outline:none;">
+              <div style="display:flex;gap:.5rem;">
+                <button type="submit" style="flex:1;padding:8px 12px;border:2px solid var(--primary);background:var(--primary);color:#fff;border-radius:25px;cursor:pointer;font-size:.85rem;font-weight:600;white-space:nowrap;">{{ loginLabel }}</button>
+                <button type="button" onClick="{{ cancelLogin }}" style="padding:8px 12px;border:1px solid var(--border);background:var(--bg-light);color:var(--text);border-radius:25px;cursor:pointer;font-size:.85rem;white-space:nowrap;">취소</button>
+              </div>
+            </form>
+            <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+              <p style="color:#d9534f;font-size:.8rem;">{{ loginError }}</p>
+            </sc-if>
+          </sc-if>
+        </sc-if>
+        <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;">
+            <div style="display:flex;align-items:center;gap:.5rem;min-width:0;">
+              <img src="{{ userAvatar }}" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;">
+              <span style="font-weight:600;font-size:.88rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ userLogin }}</span>
+            </div>
+            <button onClick="{{ logout }}" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:.78rem;white-space:nowrap;" style-hover="color:var(--primary);">로그아웃</button>
+          </div>
+          <form onSubmit="{{ submitGuest }}" style="display:flex;flex-direction:column;gap:.5rem;">
+            <input type="text" value="{{ guestInput }}" onInput="{{ onGuestInput }}" maxlength="120" placeholder="한 줄 메시지" aria-label="방명록 메시지" style="width:100%;padding:9px 16px;border:2px solid var(--primary);border-radius:25px;background:var(--bg-light);color:var(--text);font-size:.88rem;outline:none;">
+            <button type="submit" style="padding:8px 12px;border:2px solid var(--primary);background:var(--primary);color:#fff;border-radius:25px;cursor:pointer;font-size:.85rem;font-weight:600;white-space:nowrap;">남기기</button>
+          </form>
+        </sc-if>
+        <ul style="list-style:none;display:flex;flex-direction:column;max-height:320px;overflow-y:auto;">
+          <sc-for list="{{ guests }}" as="g" hint-placeholder-count="0">
+            <li style="display:flex;gap:.6rem;align-items:flex-start;padding:.65rem 0;border-top:1px solid var(--border);">
+              <img src="{{ g.avatar }}" alt="" width="30" height="30" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;">
+              <div style="display:flex;flex-direction:column;gap:.15rem;min-width:0;flex:1;">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:.4rem;">
+                  <a href="{{ g.url }}" target="_blank" rel="noopener" style="font-weight:700;font-size:.85rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" style-hover="color:var(--primary);">{{ g.login }}</a>
+                  <span style="font-size:.72rem;color:var(--text-light);white-space:nowrap;">{{ g.date }}</span>
+                </div>
+                <p style="color:var(--text);font-size:.85rem;line-height:1.45;word-break:break-word;">{{ g.msg }}</p>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{ noGuests }}" hint-placeholder-val="{{ false }}">
+          <p style="text-align:center;padding:.5rem 0;color:var(--text-light);font-size:.82rem;">아직 방문 기록이 없습니다.</p>
+        </sc-if>
+      </section>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);">
+          <span style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;color:var(--text-light);white-space:nowrap;"><span style="width:6px;height:6px;border-radius:50%;background:var(--primary);"></span>오늘 방문자</span>
+          <span style="font-size:1.25rem;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ visitToday }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.85rem 1.1rem;">
+          <span style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;color:var(--text-light);white-space:nowrap;"><span style="width:6px;height:6px;border-radius:50%;background:var(--border);"></span>누적 방문자</span>
+          <span style="font-size:1.25rem;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ visitTotal }}</span>
+        </div>
+      </div>
+      <section style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.85rem;">
+        <div style="padding-bottom:.6rem;border-bottom:1px solid var(--border);">
+          <h3 style="font-size:1.05rem;font-weight:700;color:var(--text);white-space:nowrap;">Skills</h3>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Git</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#GitHub</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#GitFlow</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#GitHubFlow</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#HTML</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#CSS</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#JavaScript</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Jekyll</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#GitHubPages</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Liquid</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Markdown</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Mermaid</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#NextJS</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#TypeScript</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#TailwindCSS</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Supabase</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Vercel</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Java</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#IntelliJ</span>
+        </div>
+      </section>
+    </aside>
+    <div style="min-width:0;">
+  <h1 style="font-size:2.8em;font-weight:900;margin-bottom:30px;text-align:center;letter-spacing:-1px;">sooyoung's blog</h1>
+
+  <div style="display:flex;justify-content:center;align-items:center;margin-bottom:30px;">
+    <form action="#" method="get" style="width:100%;max-width:400px;position:relative;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#667eea" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;left:18px;top:50%;transform:translateY(-50%);pointer-events:none;"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4.3-4.3"></path></svg>
+      <input type="search" name="q" placeholder="Search" aria-label="글 검색" style="width:100%;padding:12px 18px 12px 46px;border:2px solid var(--primary);border-radius:25px;background-color:var(--bg-light);color:var(--text);font-size:1rem;transition:all .3s;outline:none;" style-focus="box-shadow:0 0 0 3px rgba(102,126,234,0.1);">
+    </form>
+  </div>
+
+  <div style="margin:3rem 0;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2rem;margin-bottom:2rem;">
+      <div style="order:2;padding:2rem 0;display:flex;align-items:center;justify-content:center;">
+        <div style="display:flex;flex-direction:column;gap:2rem;align-items:center;width:100%;">
+          <div style="position:relative;width:200px;height:200px;">
+            <svg viewBox="0 0 100 100" style="width:100%;height:100%;transform:rotate(-90deg);">
+              <circle cx="50" cy="50" r="45" fill="none" stroke="var(--border)" stroke-width="8"></circle>
+              <circle cx="50" cy="50" r="45" fill="none" stroke="var(--primary)" stroke-width="8" stroke-linecap="round" stroke-dasharray="282.74" stroke-dashoffset="{{ dashOffset }}" style="transition:stroke-dashoffset 1s ease;"></circle>
+            </svg>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+              <div style="font-size:2rem;font-weight:700;color:var(--primary);white-space:nowrap;"><span>{{ dayCount }}</span><span style="font-size:.9rem;color:var(--text-light);margin-left:.3rem;">일차</span></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;width:100%;max-width:420px;">
+            <span style="font-size:.9em;color:var(--text-light);min-width:50px;">진행률</span>
+            <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+              <div style="height:100%;width:{{ percentStr }};background:linear-gradient(90deg,var(--primary),#8b9ef5);border-radius:4px;transition:width .5s ease;"></div>
+            </div>
+            <div style="min-width:40px;text-align:right;font-weight:600;color:var(--primary);">{{ percentStr }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="order:1;width:100%;max-width:440px;justify-self:start;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+          <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.01em;color:var(--text);white-space:nowrap;flex-shrink:0;">{{ monthLabel }}</div>
+          <div style="display:flex;gap:.25rem;">
+            <button onClick="{{ prevMonth }}" aria-label="이전 달" style="background:none;border:none;cursor:pointer;color:var(--text-light);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .2s;" style-hover="color:var(--primary);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></button>
+            <button onClick="{{ nextMonth }}" aria-label="다음 달" style="background:none;border:none;cursor:pointer;color:var(--text-light);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .2s;" style-hover="color:var(--primary);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:.5rem;text-align:center;color:var(--text-light);font-size:.75rem;font-weight:500;letter-spacing:.05em;">
+          <div style="color:#e5484d;">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);row-gap:.25rem;">
+          <sc-for list="{{ days }}" as="d" hint-placeholder-count="35">
+            <sc-if value="{{ d.empty }}" hint-placeholder-val="{{ false }}">
+              <div style="height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:.92rem;color:var(--border);"><span>{{ d.n }}</span><span style="width:4px;height:4px;"></span></div>
+            </sc-if>
+            <sc-if value="{{ d.today }}" hint-placeholder-val="{{ false }}">
+              <div style="position:relative;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:.92rem;color:var(--primary);font-weight:700;"><span>{{ d.n }}</span><sc-if value="{{ d.goal }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 48 44" width="46" height="42" aria-hidden="true" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-8deg);pointer-events:none;overflow:visible;" fill="none" stroke="#facc15" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M24 5C38 4 45 14 43 24C41 35 29 40 19 38C8 36 3 26 6 16C9 8 18 4 27 6"></path><path d="M22 4C36 3 46 12 44 23C42 34 31 41 20 39C9 38 2 28 5 17C8 8 17 3 30 5" opacity=".85"></path><path d="M25 7C37 6 44 16 42 25C40 34 28 40 18 37C9 35 4 25 7 15C10 9 20 4 29 7" opacity=".7"></path></svg></sc-if><sc-if value="{{ d.posted }}" hint-placeholder-val="{{ false }}"><span style="width:4px;height:4px;border-radius:50%;background:var(--primary);"></span></sc-if><sc-if value="{{ d.notPosted }}" hint-placeholder-val="{{ true }}"><span style="width:14px;height:2px;border-radius:1px;background:var(--primary);"></span></sc-if></div>
+            </sc-if>
+            <sc-if value="{{ d.normal }}" hint-placeholder-val="{{ true }}">
+              <div title="{{ d.goalTitle }}" style="position:relative;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:.92rem;color:{{ d.color }};"><span>{{ d.n }}</span><sc-if value="{{ d.goal }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 48 44" width="49" height="42" aria-hidden="true" style="position: absolute; left: 51%; top: 42%; transform: translate(-50%,-50%) rotate(-8deg); pointer-events: none; overflow: visible" fill="none" stroke="#facc15" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M24 5C38 4 45 14 43 24C41 35 29 40 19 38C8 36 3 26 6 16C9 8 18 4 27 6"></path><path d="M22 4C36 3 46 12 44 23C42 34 31 41 20 39C9 38 2 28 5 17C8 8 17 3 30 5" opacity=".85"></path><path d="M25 7C37 6 44 16 42 25C40 34 28 40 18 37C9 35 4 25 7 15C10 9 20 4 29 7" opacity=".7"></path></svg></sc-if><sc-if value="{{ d.posted }}" hint-placeholder-val="{{ false }}"><span style="width:4px;height:4px;border-radius:50%;background:var(--primary);"></span></sc-if><sc-if value="{{ d.notPosted }}" hint-placeholder-val="{{ true }}"><span style="width:4px;height:4px;"></span></sc-if></div>
+            </sc-if>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin:2rem 0;">
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;background:var(--primary-soft);border-bottom:1px solid var(--border);padding:.85rem 1.2rem;">
+        <h3 style="display:flex;align-items:center;gap:.5rem;font-size:.92rem;font-weight:700;letter-spacing:.02em;color:var(--text);"><span style="color:var(--primary);display:flex;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span>Module</h3>
+      </div>
+      <ul style="list-style:none;padding:.5rem 1.2rem 1rem;display:grid;grid-template-rows:repeat(3,auto);grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);column-gap:1.5rem;">
+        <sc-for list="{{ moduleItems }}" as="it" hint-placeholder-count="5">
+          <li style="display:flex;gap:.65rem;align-items:baseline;padding:.5rem 0;color:var(--text-light);min-width:0;"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">-</span><a href="{{ it.href }}" style="font-size:.91rem;color:var(--text-light);transition:color .2s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" style-hover="color:var(--primary);text-decoration:underline;">{{ it.title }}</a></li>
+        </sc-for>
+      </ul>
+    </div>
+
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;background:var(--primary-soft);border-bottom:1px solid var(--border);padding:.85rem 1.2rem;">
+        <h3 style="display:flex;align-items:center;gap:.5rem;font-size:.92rem;font-weight:700;letter-spacing:.02em;color:var(--text);"><span style="color:var(--primary);display:flex;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span>Study Notes</h3>
+        <a href="blog.html#sec-1" style="font-size:.78rem;color:var(--primary);white-space:nowrap;" style-hover="text-decoration:underline;">More</a>
+      </div>
+      <ul style="list-style:none;padding:.5rem 1.2rem 1rem;font-size:.91rem;">
+        <sc-for list="{{ studyItems }}" as="it" hint-placeholder-count="3">
+          <li style="display:flex;gap:.65rem;align-items:baseline;padding:.5rem 0;color:var(--text-light);"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">-</span><a href="{{ it.href }}" style="color:var(--text-light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;" style-hover="color:var(--primary);text-decoration:underline;">{{ it.title }}</a></li>
+        </sc-for>
+      </ul>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin:2rem 0;">
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;background:var(--primary-soft);border-bottom:1px solid var(--border);padding:.85rem 1.2rem;">
+        <h3 style="display:flex;align-items:center;gap:.5rem;font-size:.92rem;font-weight:700;letter-spacing:.02em;color:var(--text);"><span style="color:var(--primary);display:flex;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></span>Assignments</h3>
+        <a href="blog.html#sec-2" style="font-size:.78rem;color:var(--primary);white-space:nowrap;" style-hover="text-decoration:underline;">More</a>
+      </div>
+      <ul style="list-style:none;padding:.5rem 1.2rem 1rem;font-size:.91rem;">
+        <sc-for list="{{ assignItems }}" as="it" hint-placeholder-count="3">
+          <li style="display:flex;gap:.65rem;align-items:baseline;padding:.5rem 0;color:var(--text-light);"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">-</span><a href="{{ it.href }}" style="color:var(--text-light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;" style-hover="color:var(--primary);text-decoration:underline;">{{ it.title }}</a></li>
+        </sc-for>
+      </ul>
+    </div>
+
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;background:var(--primary-soft);border-bottom:1px solid var(--border);padding:.85rem 1.2rem;">
+        <h3 style="display:flex;align-items:center;gap:.5rem;font-size:.92rem;font-weight:700;letter-spacing:.02em;color:var(--text);"><span style="color:var(--primary);display:flex;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg></span>Projects</h3>
+        <a href="blog.html#sec-3" style="font-size:.78rem;color:var(--primary);white-space:nowrap;" style-hover="text-decoration:underline;">More</a>
+      </div>
+      <ul style="list-style:none;padding:.5rem 1.2rem 1rem;font-size:.91rem;">
+        <sc-for list="{{ projectItems }}" as="it" hint-placeholder-count="3">
+          <li style="display:flex;gap:.65rem;align-items:baseline;padding:.5rem 0;color:var(--text-light);"><span style="color:var(--primary);font-weight:700;flex-shrink:0;">-</span><a href="{{ it.href }}" style="color:var(--text-light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;" style-hover="color:var(--primary);text-decoration:underline;">{{ it.title }}</a></li>
+        </sc-for>
+      </ul>
+      <sc-if value="{{ projectEmpty }}" hint-placeholder-val="{{ false }}">
+        <p style="padding:0 1.2rem 1rem;color:var(--text-light);font-size:.88rem;">아직 글이 없습니다.</p>
+      </sc-if>
+    </div>
+  </div>
+
+    </div>
+  </div>
+</main>
+
+<sc-if value="{{ atBottom }}" hint-placeholder-val="{{ false }}">
+  <button onClick="{{ toTop }}" aria-label="맨 위로" style="position:fixed;right:2rem;bottom:2rem;z-index:200;width:48px;height:48px;border-radius:50%;border:2px solid var(--primary);background:var(--bg);color:var(--primary);box-shadow:var(--shadow-lg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;" style-hover="background:var(--primary);color:#fff;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"></path></svg></button>
+</sc-if>
+
+<footer style="background:var(--bg-light);border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text-light);margin-top:3rem;">
+  <p>© 2026 Tech Blog. All rights reserved.</p>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startDate&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2026-08-26&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;totalDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:175,&quot;min&quot;:1,&quot;max&quot;:1000,&quot;tsType&quot;:&quot;number&quot;}}">
+// 대한민국 공휴일 (관공서의 공휴일에 관한 규정 기준, 대체공휴일 포함)
+const KR_HOLIDAYS = {"2025-01-01":"신정","2025-01-27":"임시공휴일","2025-01-28":"설날 연휴","2025-01-29":"설날","2025-01-30":"설날 연휴","2025-03-01":"삼일절","2025-03-03":"대체공휴일","2025-05-05":"어린이날·부처님오신날","2025-05-06":"대체공휴일","2025-06-03":"대통령선거일","2025-06-06":"현충일","2025-08-15":"광복절","2025-10-03":"개천절","2025-10-05":"추석 연휴","2025-10-06":"추석","2025-10-07":"추석 연휴","2025-10-08":"대체공휴일","2025-10-09":"한글날","2025-12-25":"성탄절","2026-01-01":"신정","2026-02-16":"설날 연휴","2026-02-17":"설날","2026-02-18":"설날 연휴","2026-03-01":"삼일절","2026-03-02":"대체공휴일","2026-05-05":"어린이날","2026-05-24":"부처님오신날","2026-05-25":"대체공휴일","2026-06-03":"전국동시지방선거","2026-06-06":"현충일","2026-07-17":"제헌절","2026-08-15":"광복절","2026-08-17":"대체공휴일","2026-09-24":"추석 연휴","2026-09-25":"추석","2026-09-26":"추석 연휴","2026-10-03":"개천절","2026-10-05":"대체공휴일","2026-10-09":"한글날","2026-12-25":"성탄절","2027-01-01":"신정","2027-02-06":"설날 연휴","2027-02-07":"설날","2027-02-08":"설날 연휴","2027-02-09":"대체공휴일","2027-03-01":"삼일절","2027-05-05":"어린이날","2027-05-13":"부처님오신날","2027-06-06":"현충일","2027-07-17":"제헌절","2027-07-19":"대체공휴일","2027-08-15":"광복절","2027-08-16":"대체공휴일","2027-09-14":"추석 연휴","2027-09-15":"추석","2027-09-16":"추석 연휴","2027-10-03":"개천절","2027-10-04":"대체공휴일","2027-10-09":"한글날","2027-10-11":"대체공휴일","2027-12-25":"성탄절","2027-12-27":"대체공휴일"};
+const HOLIDAY_RED = '#e5484d';
+const GOAL_DATE = '2027-02-16';
+
+const getData = () => window.BLOG_DATA || { posts: [], modules: [] };
+
+class Component extends DCLogic {
+  state = (() => {
+    const n = new Date();
+    let theme = '';
+    try { theme = localStorage.getItem('theme') || ''; } catch (e) {}
+    let user = null, guests = [];
+    try { user = JSON.parse(localStorage.getItem('sooyoungGuestUser') || 'null'); } catch (e) {}
+    try { guests = JSON.parse(localStorage.getItem('sooyoungGuestbook') || '[]'); } catch (e) {}
+    return { month: n.getMonth(), year: n.getFullYear(), theme, today: 0, total: 0, profileName: 'tjtndud2', user, guests, asking: false, loginInput: '', loginError: '', loading: false, guestInput: '' };
+  })();
+  componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); }
+  asideRef = React.createRef();
+  asideTop = 90;
+  lastY = 0;
+  updateAside = () => {
+    const el = this.asideRef.current; if (!el) return;
+    const vh = window.innerHeight, ah = el.offsetHeight, y = window.scrollY;
+    const minTop = Math.min(90, vh - ah - 20);
+    this.asideTop = Math.max(minTop, Math.min(90, this.asideTop - (y - this.lastY)));
+    this.lastY = y;
+    el.style.top = this.asideTop + 'px';
+  };
+  onScroll = () => {
+    this.updateAside();
+    const d = document.documentElement;
+    const atBottom = window.innerHeight + window.scrollY >= d.scrollHeight - 4;
+    if (atBottom !== this.state.atBottom) this.setState({ atBottom });
+  };
+  componentDidMount() {
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    setTimeout(this.onScroll, 0);
+    if (!window.BLOG_DATA) { const t = setInterval(() => { if (window.BLOG_DATA) { clearInterval(t); this.forceUpdate(); } }, 50); }
+    fetch('https://api.github.com/users/tjtndud2').then(r => r.ok ? r.json() : null).then(d => { if (d && d.name) this.setState({ profileName: d.name }); }).catch(() => {});
+    document.documentElement.setAttribute('data-theme', this.state.theme);
+    const key = this.todayKey();
+    const K = 'sooyoungBlogVisits';
+    let s = { date: key, today: 0, total: 0 };
+    try { const p = JSON.parse(localStorage.getItem(K) || 'null'); if (p && typeof p.total === 'number') s = p; } catch (e) {}
+    if (s.date !== key) { s.date = key; s.today = 0; }
+    try {
+      if (localStorage.getItem('sooyoungVisitorDay') !== key) { s.today++; localStorage.setItem('sooyoungVisitorDay', key); }
+      if (!sessionStorage.getItem('sooyoungVisitCounted')) { s.total++; sessionStorage.setItem('sooyoungVisitCounted', '1'); }
+    } catch (e) {}
+    if (s.total < s.today) s.total = s.today;
+    try { localStorage.setItem(K, JSON.stringify(s)); } catch (e) {}
+    this.setState({ today: s.today, total: s.total });
+  }
+  todayKey() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  renderVals() {
+    const D = getData();
+    const sorted = [...D.posts].sort((a, b) => b.date.localeCompare(a.date));
+    const POST_DATES = sorted.map(p => p.date);
+    const bySec = (sec) => sorted.filter(p => p.section === sec).slice(0, 3).map(p => ({ title: p.title, href: 'post.html?f=' + encodeURIComponent(p.file || '') }));
+    const HOME_LISTS = { module: D.modules.map(m => ({ title: m.title, href: 'module.html?m=' + encodeURIComponent(m.title) })), study: bySec('Study Notes'), assign: bySec('Assignments'), project: bySec('Projects') };
+    const startDate = this.props.startDate ?? '2026-08-26';
+    const totalDays = this.props.totalDays ?? 175;
+    const [y, m, d] = startDate.split('-').map(Number);
+    const now = new Date();
+    const t0 = new Date(y, m - 1, d), t1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dayCount = Math.max(Math.floor((t1 - t0) / 86400000) + 1, 1);
+    const percent = Math.min(Math.round(dayCount / totalDays * 100), 100);
+    const C = 2 * Math.PI * 45;
+
+    const { month, year } = this.state;
+    const first = new Date(year, month, 1).getDay();
+    const last = new Date(year, month + 1, 0);
+    const prevLast = new Date(year, month, 0).getDate();
+    const days = [];
+    for (let i = prevLast - first + 1; i <= prevLast; i++) days.push({ n: i, empty: true });
+    for (let i = 1; i <= last.getDate(); i++) {
+      const isT = now.getDate() === i && now.getMonth() === month && now.getFullYear() === year;
+      const key = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
+      const posted = POST_DATES.includes(key);
+      const holiday = KR_HOLIDAYS[key] || '';
+      const red = !!holiday || new Date(year, month, i).getDay() === 0;
+      const goal = key === GOAL_DATE;
+      days.push({ goal, goalTitle: goal ? (holiday ? holiday + ' · ' : '') + '과정 종료일' : holiday, n: i, today: isT, normal: !isT, posted, notPosted: !posted, holiday, color: red ? HOLIDAY_RED : 'var(--text)' });
+    }
+    for (let i = 1; i <= 6 - last.getDay(); i++) days.push({ n: i, empty: true });
+
+    const shift = (k) => this.setState(s => {
+      let mo = s.month + k, yr = s.year;
+      if (mo < 0) { mo = 11; yr--; } if (mo > 11) { mo = 0; yr++; }
+      return { month: mo, year: yr };
+    });
+    return {
+      asideRef: this.asideRef,
+      atBottom: !!this.state.atBottom,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+      isDark: this.state.theme === 'dark',
+      isLight: this.state.theme !== 'dark',
+      toggleTheme: () => {
+        const next = this.state.theme === 'dark' ? '' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        this.setState({ theme: next });
+      },
+      visitToday: this.state.today.toLocaleString('ko-KR'),
+      visitTotal: this.state.total.toLocaleString('ko-KR'),
+      dayCount, percentStr: percent + '%', dashOffset: C - percent / 100 * C,
+      monthLabel: year + '년 ' + (month + 1) + '월',
+      days, prevMonth: () => shift(-1), nextMonth: () => shift(1),
+      moduleItems: HOME_LISTS.module.slice(0, 5),
+      studyItems: HOME_LISTS.study.slice(0, 3),
+      assignItems: HOME_LISTS.assign.slice(0, 3),
+      projectItems: HOME_LISTS.project.slice(0, 3),
+      projectEmpty: HOME_LISTS.project.length === 0,
+      profileName: this.state.profileName,
+      loggedIn: !!this.state.user, loggedOut: !this.state.user,
+      asking: this.state.asking, notAsking: !this.state.asking,
+      userLogin: this.state.user ? this.state.user.login : '',
+      userAvatar: this.state.user ? this.state.user.avatar : '',
+      loginInput: this.state.loginInput, loginError: this.state.loginError,
+      loginLabel: this.state.loading ? '확인 중…' : '로그인',
+      startLogin: () => this.setState({ asking: true, loginError: '' }),
+      cancelLogin: () => this.setState({ asking: false, loginInput: '', loginError: '' }),
+      onLoginInput: (e) => this.setState({ loginInput: e.target.value }),
+      submitLogin: (e) => {
+        e.preventDefault();
+        const id = this.state.loginInput.trim().replace(/^@/, '');
+        if (!/^[a-zA-Z0-9-]{1,39}$/.test(id)) { this.setState({ loginError: '올바른 GitHub 아이디를 입력해주세요.' }); return; }
+        this.setState({ loading: true, loginError: '' });
+        const done = (u) => { try { localStorage.setItem('sooyoungGuestUser', JSON.stringify(u)); } catch (er) {} this.setState({ user: u, asking: false, loading: false, loginInput: '' }); };
+        fetch('https://api.github.com/users/' + id)
+          .then(r => { if (r.status === 404) throw new Error('404'); return r.ok ? r.json() : null; })
+          .then(d => done({ login: d ? d.login : id, avatar: d ? d.avatar_url : 'https://github.com/' + id + '.png' }))
+          .catch(er => { if (er.message === '404') this.setState({ loading: false, loginError: '존재하지 않는 GitHub 계정입니다.' }); else done({ login: id, avatar: 'https://github.com/' + id + '.png' }); });
+      },
+      logout: () => { try { localStorage.removeItem('sooyoungGuestUser'); } catch (er) {} this.setState({ user: null }); },
+      guestInput: this.state.guestInput,
+      onGuestInput: (e) => this.setState({ guestInput: e.target.value }),
+      submitGuest: (e) => {
+        e.preventDefault();
+        const msg = this.state.guestInput.trim();
+        if (!msg || !this.state.user) return;
+        const d = new Date();
+        const entry = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), ts: d.getTime(), likes: [], comments: [], login: this.state.user.login, avatar: this.state.user.avatar, msg, date: d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0') };
+        const guests = [entry, ...this.state.guests];
+        try { localStorage.setItem('sooyoungGuestbook', JSON.stringify(guests)); } catch (er) {}
+        this.setState({ guests, guestInput: '' });
+      },
+      guests: this.state.guests.map(g => ({ ...g, url: 'https://github.com/' + g.login })),
+      guestCount: String(this.state.guests.length),
+      noGuests: this.state.guests.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

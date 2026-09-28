@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Guestbook · Tech Blog</title>
+<script src="./blog-data.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#667eea;--primary-soft:rgba(102,126,234,0.07);--bg:#ffffff;--bg-light:#f8f8f8;--text:#1a1a1a;--text-light:#666666;--border:#e8e8e8;--shadow:0 2px 8px rgba(0,0,0,0.1);--shadow-lg:0 12px 24px rgba(0,0,0,0.08)}
+[data-theme="dark"]{--primary-soft:rgba(102,126,234,0.13);--bg:#0f0f0f;--bg-light:#1a1a1a;--text:#f0f0f0;--text-light:#b0b0b0;--border:#2a2a2a;--shadow:0 2px 8px rgba(0,0,0,0.3);--shadow-lg:0 12px 24px rgba(0,0,0,0.3)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;line-height:1.6}
+a{color:var(--text);text-decoration:none}
+a:hover{color:var(--primary)}
+input::placeholder{color:var(--text-light)}
+</style>
+</helmet>
+<div style="background:var(--bg);color:var(--text);min-height:100vh;">
+<header style="background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;">
+  <div style="max-width:1200px;margin:0 auto;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">
+    <a href="index.html" style="font-size:1.5rem;font-weight:700;color:var(--text);white-space:nowrap;flex-shrink:0;">Tech Blog</a>
+    <nav style="display:flex;align-items:center;gap:2rem;">
+      <a href="index.html" style="font-weight:500;color:var(--text);transition:color .3s;" style-hover="color:var(--primary);">Home</a>
+      <a href="blog.html" style="font-weight:500;color:var(--text);transition:color .3s;" style-hover="color:var(--primary);">Blog</a>
+      <a href="guestbook.html" style="position:relative;font-weight:500;color:var(--primary);">Guestbook<span style="position:absolute;left:0;right:0;bottom:-8px;height:2px;background:var(--primary);"></span></a>
+      <button onClick="{{ toggleTheme }}" aria-label="테마 전환" style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .3s;width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--text);flex-shrink:0;" style-hover="border-color:var(--primary);"><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path></svg></sc-if><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></sc-if></button>
+    </nav>
+  </div>
+</header>
+
+<main style="max-width:760px;margin:0 auto;padding:3rem 2rem;min-height:calc(100vh - 200px);display:flex;flex-direction:column;gap:2rem;">
+  <div style="display:flex;flex-direction:column;gap:.4rem;">
+    <h2 style="font-size:2.2rem;font-weight:800;letter-spacing:-.02em;color:var(--text);">Guestbook</h2>
+    <p style="color:var(--text-light);font-size:.95rem;">다녀간 흔적을 남기고, 마음에 드는 글에 공감과 댓글을 남겨주세요.</p>
+  </div>
+
+  <section style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:1rem;">
+    <sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ notAsking }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+          <p style="flex:1;min-width:0;color:var(--text-light);font-size:.95rem;">GitHub 계정으로 로그인하고 글을 남겨주세요.</p>
+          <button onClick="{{ startLogin }}" style="display:flex;align-items:center;gap:.5rem;padding:10px 20px;border:none;background:#24292f;color:#fff;border-radius:25px;cursor:pointer;font-size:.92rem;font-weight:600;white-space:nowrap;" style-hover="opacity:.85;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.550-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.190-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>GitHub로 로그인</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ asking }}" hint-placeholder-val="{{ false }}">
+        <form onSubmit="{{ submitLogin }}" style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
+          <input type="text" value="{{ loginInput }}" onInput="{{ onLoginInput }}" placeholder="GitHub 아이디" aria-label="GitHub 아이디" style="flex:1;min-width:180px;padding:10px 18px;border:2px solid var(--primary);border-radius:25px;background:var(--bg-light);color:var(--text);font-size:.92rem;outline:none;">
+          <button type="submit" style="padding:10px 20px;border:2px solid var(--primary);background:var(--primary);color:#fff;border-radius:25px;cursor:pointer;font-size:.92rem;font-weight:600;white-space:nowrap;flex-shrink:0;">{{ loginLabel }}</button>
+          <button type="button" onClick="{{ cancelLogin }}" style="padding:10px 16px;border:1px solid var(--border);background:var(--bg-light);color:var(--text);border-radius:25px;cursor:pointer;font-size:.92rem;white-space:nowrap;">취소</button>
+        </form>
+        <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+          <p style="color:#e5484d;font-size:.85rem;">{{ loginError }}</p>
+        </sc-if>
+      </sc-if>
+    </sc-if>
+    <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;">
+        <div style="display:flex;align-items:center;gap:.6rem;min-width:0;">
+          <img src="{{ userAvatar }}" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;">
+          <span style="font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ userLogin }}</span>
+        </div>
+        <button onClick="{{ logout }}" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:.82rem;white-space:nowrap;" style-hover="color:var(--primary);">로그아웃</button>
+      </div>
+      <form onSubmit="{{ submitEntry }}" style="display:flex;flex-direction:column;gap:.6rem;">
+        <textarea value="{{ entryInput }}" onInput="{{ onEntryInput }}" maxlength="500" rows="3" placeholder="방명록을 남겨주세요" aria-label="방명록 내용" style="width:100%;resize:vertical;padding:.85rem 1rem;border:2px solid var(--primary);border-radius:12px;background:var(--bg-light);color:var(--text);font-size:.95rem;line-height:1.6;font-family:inherit;outline:none;"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;">
+          <span style="font-size:.78rem;color:var(--text-light);font-variant-numeric:tabular-nums;">{{ entryLen }} / 500</span>
+          <button type="submit" style="padding:10px 20px;border:2px solid var(--primary);background:var(--primary);color:#fff;border-radius:25px;cursor:pointer;font-size:.92rem;font-weight:600;white-space:nowrap;flex-shrink:0;">남기기</button>
+        </div>
+      </form>
+    </sc-if>
+  </section>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);">
+    <span style="font-size:.95rem;color:var(--text);font-weight:700;white-space:nowrap;">전체 <span style="color:var(--primary);">{{ entryCount }}</span></span>
+    <div style="display:flex;gap:.4rem;">
+      <sc-for list="{{ sorts }}" as="o" hint-placeholder-count="2">
+        <sc-if value="{{ o.active }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ o.select }}" style="padding:.3rem .75rem;border:1px solid var(--primary);background:var(--primary);color:#fff;border-radius:20px;cursor:pointer;font-size:.8rem;white-space:nowrap;">{{ o.label }}</button>
+        </sc-if>
+        <sc-if value="{{ o.inactive }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ o.select }}" style="padding:.3rem .75rem;border:1px solid var(--border);background:var(--bg-light);color:var(--text);border-radius:20px;cursor:pointer;font-size:.8rem;white-space:nowrap;" style-hover="border-color:var(--primary);color:var(--primary);">{{ o.label }}</button>
+        </sc-if>
+      </sc-for>
+    </div>
+  </div>
+
+  <ul style="list-style:none;display:flex;flex-direction:column;gap:1rem;">
+    <sc-for list="{{ entries }}" as="g" hint-placeholder-count="0">
+      <li style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:.85rem;">
+        <div style="display:flex;gap:.8rem;align-items:flex-start;">
+          <img src="{{ g.avatar }}" alt="" width="40" height="40" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;">
+          <div style="display:flex;flex-direction:column;gap:.3rem;min-width:0;flex:1;">
+            <div style="display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;">
+              <a href="{{ g.url }}" target="_blank" rel="noopener" style="font-weight:700;color:var(--text);" style-hover="color:var(--primary);">{{ g.login }}</a>
+              <span style="font-size:.78rem;color:var(--text-light);white-space:nowrap;">{{ g.date }}</span>
+              <sc-if value="{{ g.mine }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ g.remove }}" style="margin-left:auto;background:none;border:none;color:var(--text-light);cursor:pointer;font-size:.78rem;" style-hover="color:#e5484d;">삭제</button>
+              </sc-if>
+            </div>
+            <p style="color:var(--text);font-size:.95rem;line-height:1.65;white-space:pre-wrap;word-break:break-word;">{{ g.msg }}</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.5rem;padding-left:3.3rem;">
+          <sc-if value="{{ g.liked }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ g.toggleLike }}" aria-label="공감 취소" style="display:flex;align-items:center;gap:.35rem;height:28px;padding:0 .6rem;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text-light);cursor:pointer;font-size:.8rem;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0;border-color:#ef4444;color:#ef4444;"><svg viewBox="4.5 1.5 15 21" width="14" height="19" style="display:block;" fill="#ef4444" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c-3.6 0-6.5 2.9-6.5 6.6 0 4 3.2 7.4 6.5 8.4 3.3-1 6.5-4.4 6.5-8.4 0-3.7-2.9-6.6-6.5-6.6z"></path><path d="M10.8 17.4l1.2 1.4 1.2-1.4z"></path><path d="M12 18.8c-.9 1.1.9 1.6 0 2.7" fill="none"></path></svg>공감 {{ g.likeCount }}</button>
+          </sc-if>
+          <sc-if value="{{ g.notLiked }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ g.toggleLike }}" aria-label="공감" style="display:flex;align-items:center;gap:.35rem;height:28px;padding:0 .6rem;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text-light);cursor:pointer;font-size:.8rem;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0;" style-hover="border-color:#ef4444;color:#ef4444;"><svg viewBox="4.5 1.5 15 21" width="14" height="19" style="display:block;" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c-3.6 0-6.5 2.9-6.5 6.6 0 4 3.2 7.4 6.5 8.4 3.3-1 6.5-4.4 6.5-8.4 0-3.7-2.9-6.6-6.5-6.6z"></path><path d="M10.8 17.4l1.2 1.4 1.2-1.4z"></path><path d="M12 18.8c-.9 1.1.9 1.6 0 2.7"></path></svg>공감 {{ g.likeCount }}</button>
+          </sc-if>
+          <button onClick="{{ g.toggleComments }}" style="display:flex;align-items:center;gap:.35rem;height:28px;padding:0 .6rem;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text-light);cursor:pointer;font-size:.8rem;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0;" style-hover="border-color:var(--primary);color:var(--primary);"><svg viewBox="0 0 24 24" width="16" height="16" style="display:block;" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"></path></svg>댓글 {{ g.commentCount }}</button>
+        </div>
+        <sc-if value="{{ g.open }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-left:3.3rem;padding:.9rem 1rem;background:var(--bg-light);border-radius:10px;display:flex;flex-direction:column;gap:.75rem;">
+            <sc-for list="{{ g.comments }}" as="c" hint-placeholder-count="0">
+              <div style="display:flex;gap:.6rem;align-items:flex-start;">
+                <img src="{{ c.avatar }}" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;">
+                <div style="display:flex;flex-direction:column;gap:.15rem;min-width:0;flex:1;">
+                  <div style="display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;">
+                    <span style="font-weight:700;font-size:.85rem;color:var(--text);">{{ c.login }}</span>
+                    <span style="font-size:.72rem;color:var(--text-light);white-space:nowrap;">{{ c.date }}</span>
+                    <sc-if value="{{ c.mine }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ c.remove }}" style="margin-left:auto;background:none;border:none;color:var(--text-light);cursor:pointer;font-size:.72rem;" style-hover="color:#e5484d;">삭제</button>
+                    </sc-if>
+                  </div>
+                  <p style="font-size:.88rem;line-height:1.55;color:var(--text);white-space:pre-wrap;word-break:break-word;">{{ c.text }}</p>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ g.noComments }}" hint-placeholder-val="{{ true }}">
+              <p style="font-size:.82rem;color:var(--text-light);">아직 댓글이 없습니다.</p>
+            </sc-if>
+            <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+              <form onSubmit="{{ g.submitComment }}" style="display:flex;gap:.5rem;align-items:center;">
+                <input type="text" value="{{ g.draft }}" onInput="{{ g.onDraft }}" maxlength="200" placeholder="댓글 달기" aria-label="댓글" style="flex:1;min-width:0;padding:8px 14px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text);font-size:.85rem;outline:none;" style-focus="border-color:var(--primary);">
+                <button type="submit" style="padding:8px 14px;border:none;background:var(--primary);color:#fff;border-radius:20px;cursor:pointer;font-size:.82rem;font-weight:600;white-space:nowrap;">등록</button>
+              </form>
+            </sc-if>
+            <sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
+              <p style="font-size:.8rem;color:var(--text-light);">댓글을 남기려면 로그인하세요.</p>
+            </sc-if>
+          </div>
+        </sc-if>
+      </li>
+    </sc-for>
+  </ul>
+  <sc-if value="{{ noEntries }}" hint-placeholder-val="{{ false }}">
+    <p style="text-align:center;padding:2rem 0;color:var(--text-light);">아직 남겨진 방명록이 없습니다. 첫 번째 글을 남겨주세요.</p>
+  </sc-if>
+</main>
+
+<sc-if value="{{ atBottom }}" hint-placeholder-val="{{ false }}">
+  <button onClick="{{ toTop }}" aria-label="맨 위로" style="position:fixed;right:2rem;bottom:2rem;z-index:200;width:48px;height:48px;border-radius:50%;border:2px solid var(--primary);background:var(--bg);color:var(--primary);box-shadow:var(--shadow-lg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;" style-hover="background:var(--primary);color:#fff;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"></path></svg></button>
+</sc-if>
+
+<footer style="background:var(--bg-light);border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text-light);margin-top:3rem;">
+  <p>© 2026 Tech Blog. All rights reserved.</p>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const GB_KEY = 'sooyoungGuestbook', USER_KEY = 'sooyoungGuestUser';
+const fmt = (d) => d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0');
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const load = () => {
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem(GB_KEY) || '[]'); } catch (e) {}
+  return list.map((g, i) => ({ id: g.id || ('legacy-' + i + '-' + (g.login || '')), ts: g.ts || 0, likes: Array.isArray(g.likes) ? g.likes : [], comments: Array.isArray(g.comments) ? g.comments : [], ...g, ...(g.id ? {} : { id: 'legacy-' + i + '-' + (g.login || '') }) }));
+};
+
+class Component extends DCLogic {
+  state = (() => {
+    let theme = '', user = null;
+    try { theme = localStorage.getItem('theme') || ''; } catch (e) {}
+    try { user = JSON.parse(localStorage.getItem(USER_KEY) || 'null'); } catch (e) {}
+    return { theme, atBottom: false, user, entries: load(), sort: 'new', open: {}, drafts: {}, asking: false, loginInput: '', loginError: '', loading: false, entryInput: '' };
+  })();
+  componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); }
+  onScroll = () => {
+    const d = document.documentElement;
+    const atBottom = window.innerHeight + window.scrollY >= d.scrollHeight - 4;
+    if (atBottom !== this.state.atBottom) this.setState({ atBottom });
+  };
+  componentDidMount() {
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    setTimeout(this.onScroll, 0);
+    document.documentElement.setAttribute('data-theme', this.state.theme);
+    this.save(this.state.entries);
+  }
+  save(entries) { try { localStorage.setItem(GB_KEY, JSON.stringify(entries)); } catch (e) {} }
+  update(fn) { this.setState(s => { const entries = fn(s.entries); this.save(entries); return { entries }; }); }
+  renderVals() {
+    const { user, sort } = this.state;
+    const me = user ? user.login : '';
+    const sorted = [...this.state.entries].sort((a, b) => sort === 'likes' ? (b.likes.length - a.likes.length) || (b.ts - a.ts) : (b.ts - a.ts));
+    const entries = sorted.map(g => {
+      const liked = !!me && g.likes.includes(me);
+      const open = !!this.state.open[g.id];
+      return {
+        ...g,
+        url: 'https://github.com/' + g.login,
+        mine: !!me && g.login === me,
+        liked, notLiked: !liked, likeCount: String(g.likes.length),
+        commentCount: String(g.comments.length),
+        open, noComments: g.comments.length === 0,
+        comments: g.comments.map(c => ({ ...c, mine: !!me && c.login === me, remove: () => this.update(list => list.map(x => x.id === g.id ? { ...x, comments: x.comments.filter(y => y.id !== c.id) } : x)) })),
+        draft: this.state.drafts[g.id] || '',
+        onDraft: (e) => { const v = e.target.value; this.setState(s => ({ drafts: { ...s.drafts, [g.id]: v } })); },
+        toggleComments: () => this.setState(s => ({ open: { ...s.open, [g.id]: !s.open[g.id] } })),
+        toggleLike: () => {
+          if (!me) { this.setState({ asking: true, loginError: '공감하려면 먼저 로그인하세요.' }); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+          this.update(list => list.map(x => x.id === g.id ? { ...x, likes: x.likes.includes(me) ? x.likes.filter(l => l !== me) : [...x.likes, me] } : x));
+        },
+        remove: () => { if (confirm('이 방명록을 삭제할까요?')) this.update(list => list.filter(x => x.id !== g.id)); },
+        submitComment: (e) => {
+          e.preventDefault();
+          const text = (this.state.drafts[g.id] || '').trim();
+          if (!text || !user) return;
+          const c = { id: uid(), login: user.login, avatar: user.avatar, text, date: fmt(new Date()), ts: Date.now() };
+          this.update(list => list.map(x => x.id === g.id ? { ...x, comments: [...x.comments, c] } : x));
+          this.setState(s => ({ drafts: { ...s.drafts, [g.id]: '' } }));
+        }
+      };
+    });
+    return {
+      atBottom: this.state.atBottom,
+      toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+      isDark: this.state.theme === 'dark', isLight: this.state.theme !== 'dark',
+      toggleTheme: () => { const n = this.state.theme === 'dark' ? '' : 'dark'; document.documentElement.setAttribute('data-theme', n); try { localStorage.setItem('theme', n); } catch (e) {} this.setState({ theme: n }); },
+      loggedIn: !!user, loggedOut: !user,
+      asking: this.state.asking, notAsking: !this.state.asking,
+      userLogin: me, userAvatar: user ? user.avatar : '',
+      loginInput: this.state.loginInput, loginError: this.state.loginError,
+      loginLabel: this.state.loading ? '확인 중…' : '로그인',
+      startLogin: () => this.setState({ asking: true, loginError: '' }),
+      cancelLogin: () => this.setState({ asking: false, loginInput: '', loginError: '' }),
+      onLoginInput: (e) => this.setState({ loginInput: e.target.value }),
+      submitLogin: (e) => {
+        e.preventDefault();
+        const id = this.state.loginInput.trim().replace(/^@/, '');
+        if (!/^[a-zA-Z0-9-]{1,39}$/.test(id)) { this.setState({ loginError: '올바른 GitHub 아이디를 입력해주세요.' }); return; }
+        this.setState({ loading: true, loginError: '' });
+        const done = (u) => { try { localStorage.setItem(USER_KEY, JSON.stringify(u)); } catch (er) {} this.setState({ user: u, asking: false, loading: false, loginInput: '' }); };
+        fetch('https://api.github.com/users/' + id)
+          .then(r => { if (r.status === 404) throw new Error('404'); return r.ok ? r.json() : null; })
+          .then(d => done({ login: d ? d.login : id, avatar: d ? d.avatar_url : 'https://github.com/' + id + '.png' }))
+          .catch(er => { if (er.message === '404') this.setState({ loading: false, loginError: '존재하지 않는 GitHub 계정입니다.' }); else done({ login: id, avatar: 'https://github.com/' + id + '.png' }); });
+      },
+      logout: () => { try { localStorage.removeItem(USER_KEY); } catch (er) {} this.setState({ user: null }); },
+      entryInput: this.state.entryInput,
+      entryLen: String(this.state.entryInput.length),
+      onEntryInput: (e) => this.setState({ entryInput: e.target.value }),
+      submitEntry: (e) => {
+        e.preventDefault();
+        const msg = this.state.entryInput.trim();
+        if (!msg || !user) return;
+        const d = new Date();
+        const entry = { id: uid(), login: user.login, avatar: user.avatar, msg, date: fmt(d), ts: d.getTime(), likes: [], comments: [] };
+        this.update(list => [entry, ...list]);
+        this.setState({ entryInput: '' });
+      },
+      sorts: [['new', '최신순'], ['likes', '공감순']].map(([k, label]) => ({ label, active: sort === k, inactive: sort !== k, select: () => this.setState({ sort: k }) })),
+      entries,
+      entryCount: String(entries.length),
+      noEntries: entries.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

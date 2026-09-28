@@ -2,6 +2,8 @@
 layout: post
 title: "마크다운 형식"
 date: 2026-08-28
+summary: "마크다운 문법"
+section: Study Notes
 ---
 
 # 마크다운 문법
