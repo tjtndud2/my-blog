@@ -104,13 +104,15 @@ input::placeholder{color:var(--text-light)}
                 <a href="{{ p.href }}" class="fit-title" style="display:block;padding-right:1.25rem;font-size:1.25rem;font-weight:700;line-height:1.4;color:var(--text);text-wrap:pretty;word-break:keep-all;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;text-overflow:ellipsis;" style-hover="color:var(--primary);">{{ p.title }}<span style="position:absolute;inset:0;"></span></a>
               </div>
               <div style="padding:.75rem 1.5rem 1.25rem;display:flex;flex-direction:column;gap:.6rem;flex-shrink:0;">
+                <div style="height:24px;overflow:hidden;">
                 <sc-if value="{{ p.hasTags }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+                  <div class="fit-tags" style="display:flex;gap:.4rem;flex-wrap:nowrap;overflow:hidden;">
                     <sc-for list="{{ p.tags }}" as="t" hint-placeholder-count="3">
-                      <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#{{ t }}</span>
+                      <span style="flex-shrink:0;background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;line-height:1.4;white-space:nowrap;">#{{ t }}</span>
                     </sc-for>
                   </div>
                 </sc-if>
+                </div>
                 <div style="display:flex;flex-direction:row-reverse;justify-content:space-between;align-items:center;gap:.5rem;">
                   <span style="display:flex;align-items:center;gap:.35rem;height:24px;line-height:1;font-size:.8rem;color:var(--text-light);white-space:nowrap;min-width:0;overflow:hidden;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg><span style="overflow:hidden;text-overflow:ellipsis;min-width:0;">{{ p.date }}</span></span>
                 </div>
@@ -158,6 +160,14 @@ class Component extends DCLogic {
       const lh = parseFloat(getComputedStyle(a).lineHeight);
       const n = String(Math.max(1, Math.min(3, Math.floor(avail / lh))));
       if (a.style.webkitLineClamp !== n) a.style.webkitLineClamp = n;
+    });
+    // 해시태그는 한 줄: 다 들어가지 않는 태그는 잘린 채로 두지 않고 숨김 (첫 태그는 항상 표시)
+    document.querySelectorAll('.fit-tags').forEach(row => {
+      const tags = [...row.children];
+      tags.forEach(t => { t.style.display = ''; });
+      const right = row.getBoundingClientRect().right;
+      const cut = tags.findIndex((t, i) => i > 0 && t.getBoundingClientRect().right > right + 0.5);
+      if (cut > 0) tags.slice(cut).forEach(t => { t.style.display = 'none'; });
     });
   };
   componentDidUpdate() { this.fitTitles(); }

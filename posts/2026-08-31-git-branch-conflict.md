@@ -3,6 +3,8 @@ layout: post
 title: "브랜치와 충돌(Merge Conflict) 정리"
 date: 2026-08-31
 section: Study Notes
+categories: [Git]
+tags: [git, branch, merge, conflict]
 ---
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
