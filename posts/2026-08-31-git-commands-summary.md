@@ -3,6 +3,8 @@ layout: post
 title: "이번 주 Git 핵심 명령어 정리"
 date: 2026-08-31
 section: Study Notes
+categories: [Git]
+tags: [git, github, command]
 ---
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
