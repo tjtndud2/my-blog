@@ -7,6 +7,7 @@
 // section: Study Notes        (Study Notes | Assignments | Projects, 생략 시 Study Notes)
 // categories: [Git]           (Jekyll 형식도 지원)
 // category: Git               (선택)
+// module: Module 2            (선택, 해당 모듈 페이지의 '이론 & 간단 실습'에 표시)
 // summary: "한 줄 요약"        (선택)
 // tags: [git, branch]          (선택)
 // ---
@@ -53,6 +54,7 @@
       title: meta.title || heading || file.replace(/\.md$/, ''),
       date: String(meta.date || dateFromName).slice(0, 10),
       section: meta.section || 'Study Notes',
+      module: meta.module || '',
       category: meta.category || (Array.isArray(meta.categories) ? meta.categories[0] : meta.categories) || '',
       summary: meta.summary || '',
       tags: Array.isArray(meta.tags) ? meta.tags : (meta.tags ? [meta.tags] : []),
@@ -63,15 +65,16 @@
   window.BlogMD = { parseFrontMatter, toPost, POSTS_DIR };
 
   function publish(posts) {
-    posts.sort((a, b) => b.date.localeCompare(a.date));
+    // 날짜 최신순, 같은 날짜는 posts/index.json 순서대로
+    posts.sort((a, b) => b.date.localeCompare(a.date) || a.order - b.order);
     window.BLOG_DATA = { modules: MODULES, posts };
     window.dispatchEvent(new Event('blogdata'));
   }
 
   fetch(POSTS_DIR + 'index.json', { cache: 'no-cache' })
     .then(r => r.ok ? r.json() : [])
-    .then(files => Promise.all(files.map(f =>
-      fetch(POSTS_DIR + f, { cache: 'no-cache' }).then(r => r.ok ? r.text() : null).then(t => t ? toPost(f, t) : null).catch(() => null)
+    .then(files => Promise.all(files.map((f, i) =>
+      fetch(POSTS_DIR + f, { cache: 'no-cache' }).then(r => r.ok ? r.text() : null).then(t => t ? { ...toPost(f, t), order: i } : null).catch(() => null)
     )))
     .then(list => publish(list.filter(Boolean)))
     .catch(() => publish([]));
