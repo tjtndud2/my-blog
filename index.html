@@ -58,57 +58,9 @@ input::placeholder{color:var(--text-light);letter-spacing:.2px}
       <section style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.85rem;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
         <div style="display:flex;align-items:baseline;gap:.5rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);">
           <h3 style="font-size:1.05rem;font-weight:700;color:var(--text);white-space:nowrap;">Guestbook</h3>
-          <span style="font-size:.8rem;color:var(--text-light);white-space:nowrap;">{{ guestCount }}</span>
           <a href="guestbook.html" style="margin-left:auto;font-size:.78rem;color:var(--primary);white-space:nowrap;" style-hover="text-decoration:underline;">All</a>
         </div>
-        <sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
-          <sc-if value="{{ notAsking }}" hint-placeholder-val="{{ true }}">
-            <p style="color:var(--text-light);font-size:.85rem;line-height:1.5;text-wrap:pretty;">GitHub 계정으로 로그인하고 방문 흔적을 남겨주세요.</p>
-            <button onClick="{{ startLogin }}" style="display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:9px 16px;border:none;background:#24292f;color:#fff;border-radius:25px;cursor:pointer;font-size:.88rem;font-weight:600;white-space:nowrap;transition:opacity .3s;" style-hover="opacity:.85;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>GitHub로 로그인</button>
-          </sc-if>
-          <sc-if value="{{ asking }}" hint-placeholder-val="{{ false }}">
-            <form onSubmit="{{ submitLogin }}" style="display:flex;flex-direction:column;gap:.5rem;">
-              <input type="text" value="{{ loginInput }}" onInput="{{ onLoginInput }}" placeholder="GitHub 아이디" aria-label="GitHub 아이디" style="width:100%;padding:9px 16px;border:2px solid var(--primary);border-radius:25px;background:var(--bg-light);color:var(--text);font-size:.88rem;outline:none;">
-              <div style="display:flex;gap:.5rem;">
-                <button type="submit" style="flex:1;padding:8px 12px;border:2px solid var(--primary);background:var(--primary);color:#fff;border-radius:25px;cursor:pointer;font-size:.85rem;font-weight:600;white-space:nowrap;">{{ loginLabel }}</button>
-                <button type="button" onClick="{{ cancelLogin }}" style="padding:8px 12px;border:1px solid var(--border);background:var(--bg-light);color:var(--text);border-radius:25px;cursor:pointer;font-size:.85rem;white-space:nowrap;">취소</button>
-              </div>
-            </form>
-            <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
-              <p style="color:#d9534f;font-size:.8rem;">{{ loginError }}</p>
-            </sc-if>
-          </sc-if>
-        </sc-if>
-        <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;">
-            <div style="display:flex;align-items:center;gap:.5rem;min-width:0;">
-              <img src="{{ userAvatar }}" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;">
-              <span style="font-weight:600;font-size:.88rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ userLogin }}</span>
-            </div>
-            <button onClick="{{ logout }}" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:.78rem;white-space:nowrap;" style-hover="color:var(--primary);">로그아웃</button>
-          </div>
-          <form onSubmit="{{ submitGuest }}" style="display:flex;flex-direction:column;gap:.5rem;">
-            <input type="text" value="{{ guestInput }}" onInput="{{ onGuestInput }}" maxlength="120" placeholder="한 줄 메시지" aria-label="방명록 메시지" style="width:100%;padding:9px 16px;border:2px solid var(--primary);border-radius:25px;background:var(--bg-light);color:var(--text);font-size:.88rem;outline:none;">
-            <button type="submit" style="padding:8px 12px;border:2px solid var(--primary);background:var(--primary);color:#fff;border-radius:25px;cursor:pointer;font-size:.85rem;font-weight:600;white-space:nowrap;">남기기</button>
-          </form>
-        </sc-if>
-        <ul style="list-style:none;display:flex;flex-direction:column;max-height:320px;overflow-y:auto;">
-          <sc-for list="{{ guests }}" as="g" hint-placeholder-count="0">
-            <li style="display:flex;gap:.6rem;align-items:flex-start;padding:.65rem 0;border-top:1px solid var(--border);">
-              <img src="{{ g.avatar }}" alt="" width="30" height="30" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;">
-              <div style="display:flex;flex-direction:column;gap:.15rem;min-width:0;flex:1;">
-                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:.4rem;">
-                  <a href="{{ g.url }}" target="_blank" rel="noopener" style="font-weight:700;font-size:.85rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" style-hover="color:var(--primary);">{{ g.login }}</a>
-                  <span style="font-size:.72rem;color:var(--text-light);white-space:nowrap;">{{ g.date }}</span>
-                </div>
-                <p style="color:var(--text);font-size:.85rem;line-height:1.45;word-break:break-word;">{{ g.msg }}</p>
-              </div>
-            </li>
-          </sc-for>
-        </ul>
-        <sc-if value="{{ noGuests }}" hint-placeholder-val="{{ false }}">
-          <p style="text-align:center;padding:.5rem 0;color:var(--text-light);font-size:.82rem;">아직 방문 기록이 없습니다.</p>
-        </sc-if>
+        <div style="max-height:320px;overflow-y:auto;"><div class="giscus"></div></div>
       </section>
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);">
@@ -283,15 +235,30 @@ const GOAL_DATE = '2027-02-16';
 
 const getData = () => window.BLOG_DATA || { posts: [], modules: [] };
 
+const GISCUS = { repo: 'tjtndud2/my-blog', repoId: 'R_kgDOUGmA1g', category: 'Announcements', categoryId: 'DIC_kwDOUGmA1s4DHeN5' };
+const giscusTheme = (t) => t === 'dark' ? 'dark' : 'light';
+const loadGiscus = (theme) => {
+  const box = document.querySelector('.giscus');
+  if (!box || box.querySelector('script, iframe')) return;
+  const s = document.createElement('script');
+  s.src = 'https://giscus.app/client.js';
+  const attrs = { repo: GISCUS.repo, 'repo-id': GISCUS.repoId, category: GISCUS.category, 'category-id': GISCUS.categoryId, mapping: 'specific', term: 'guestbook', strict: '0', 'reactions-enabled': '1', 'emit-metadata': '0', 'input-position': 'top', theme: giscusTheme(theme), lang: 'ko', loading: 'lazy' };
+  for (const k in attrs) s.setAttribute('data-' + k, attrs[k]);
+  s.crossOrigin = 'anonymous';
+  s.async = true;
+  box.appendChild(s);
+};
+const syncGiscus = (theme) => {
+  const f = document.querySelector('iframe.giscus-frame');
+  if (f && f.contentWindow) f.contentWindow.postMessage({ giscus: { setConfig: { theme: giscusTheme(theme) } } }, 'https://giscus.app');
+};
+
 class Component extends DCLogic {
   state = (() => {
     const n = new Date();
     let theme = '';
     try { theme = localStorage.getItem('theme') || ''; } catch (e) {}
-    let user = null, guests = [];
-    try { user = JSON.parse(localStorage.getItem('sooyoungGuestUser') || 'null'); } catch (e) {}
-    try { guests = JSON.parse(localStorage.getItem('sooyoungGuestbook') || '[]'); } catch (e) {}
-    return { month: n.getMonth(), year: n.getFullYear(), theme, today: 0, total: 0, profileName: 'tjtndud2', user, guests, asking: false, loginInput: '', loginError: '', loading: false, guestInput: '' };
+    return { month: n.getMonth(), year: n.getFullYear(), theme, today: 0, total: 0, profileName: 'tjtndud2' };
   })();
   componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); }
   asideRef = React.createRef();
@@ -318,6 +285,7 @@ class Component extends DCLogic {
     if (!window.BLOG_DATA) { const t = setInterval(() => { if (window.BLOG_DATA) { clearInterval(t); this.forceUpdate(); } }, 50); }
     fetch('https://api.github.com/users/tjtndud2').then(r => r.ok ? r.json() : null).then(d => { if (d && d.name) this.setState({ profileName: d.name }); }).catch(() => {});
     document.documentElement.setAttribute('data-theme', this.state.theme);
+    loadGiscus(this.state.theme);
     const key = this.todayKey();
     const K = 'sooyoungBlogVisits';
     let s = { date: key, today: 0, total: 0 };
@@ -383,6 +351,7 @@ class Component extends DCLogic {
         document.documentElement.setAttribute('data-theme', next);
         try { localStorage.setItem('theme', next); } catch (e) {}
         this.setState({ theme: next });
+        syncGiscus(next);
       },
       visitToday: this.state.today.toLocaleString('ko-KR'),
       visitTotal: this.state.total.toLocaleString('ko-KR'),
@@ -395,42 +364,6 @@ class Component extends DCLogic {
       projectItems: HOME_LISTS.project.slice(0, 3),
       projectEmpty: HOME_LISTS.project.length === 0,
       profileName: this.state.profileName,
-      loggedIn: !!this.state.user, loggedOut: !this.state.user,
-      asking: this.state.asking, notAsking: !this.state.asking,
-      userLogin: this.state.user ? this.state.user.login : '',
-      userAvatar: this.state.user ? this.state.user.avatar : '',
-      loginInput: this.state.loginInput, loginError: this.state.loginError,
-      loginLabel: this.state.loading ? '확인 중…' : '로그인',
-      startLogin: () => this.setState({ asking: true, loginError: '' }),
-      cancelLogin: () => this.setState({ asking: false, loginInput: '', loginError: '' }),
-      onLoginInput: (e) => this.setState({ loginInput: e.target.value }),
-      submitLogin: (e) => {
-        e.preventDefault();
-        const id = this.state.loginInput.trim().replace(/^@/, '');
-        if (!/^[a-zA-Z0-9-]{1,39}$/.test(id)) { this.setState({ loginError: '올바른 GitHub 아이디를 입력해주세요.' }); return; }
-        this.setState({ loading: true, loginError: '' });
-        const done = (u) => { try { localStorage.setItem('sooyoungGuestUser', JSON.stringify(u)); } catch (er) {} this.setState({ user: u, asking: false, loading: false, loginInput: '' }); };
-        fetch('https://api.github.com/users/' + id)
-          .then(r => { if (r.status === 404) throw new Error('404'); return r.ok ? r.json() : null; })
-          .then(d => done({ login: d ? d.login : id, avatar: d ? d.avatar_url : 'https://github.com/' + id + '.png' }))
-          .catch(er => { if (er.message === '404') this.setState({ loading: false, loginError: '존재하지 않는 GitHub 계정입니다.' }); else done({ login: id, avatar: 'https://github.com/' + id + '.png' }); });
-      },
-      logout: () => { try { localStorage.removeItem('sooyoungGuestUser'); } catch (er) {} this.setState({ user: null }); },
-      guestInput: this.state.guestInput,
-      onGuestInput: (e) => this.setState({ guestInput: e.target.value }),
-      submitGuest: (e) => {
-        e.preventDefault();
-        const msg = this.state.guestInput.trim();
-        if (!msg || !this.state.user) return;
-        const d = new Date();
-        const entry = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), ts: d.getTime(), likes: [], comments: [], login: this.state.user.login, avatar: this.state.user.avatar, msg, date: d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0') };
-        const guests = [entry, ...this.state.guests];
-        try { localStorage.setItem('sooyoungGuestbook', JSON.stringify(guests)); } catch (er) {}
-        this.setState({ guests, guestInput: '' });
-      },
-      guests: this.state.guests.map(g => ({ ...g, url: 'https://github.com/' + g.login })),
-      guestCount: String(this.state.guests.length),
-      noGuests: this.state.guests.length === 0
     };
   }
 }
