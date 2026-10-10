@@ -7,7 +7,7 @@
 // section: Study Notes        (Study Notes | Assignments | Projects, 생략 시 Study Notes)
 // categories: [Git]           (Jekyll 형식도 지원)
 // category: Git               (선택)
-// module: Module 2            (선택, 해당 모듈 페이지의 '이론 & 간단 실습'에 표시)
+// module: Module 2            (선택, 모듈 페이지에 표시: Projects 글은 '프로젝트', 나머지는 '이론 & 간단 실습')
 // summary: "한 줄 요약"        (선택)
 // tags: [git, branch]          (선택)
 // ---
