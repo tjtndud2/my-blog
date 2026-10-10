@@ -14,20 +14,20 @@ tags: [java, generic, collection, list, set, map]
 
 ## 목차
 
-1. [제네릭(Generic)](#1-제네릭generic)
+1. 제네릭(Generic)
    - 제네릭이란?
    - 제네릭 클래스 만들기
    - Wrapper 클래스
    - 타입 제한 `<T extends Type>`
    - 와일드카드 `<?>`, `<? extends>`, `<? super>`
-2. [컬렉션(Collection)](#2-컬렉션collection)
+2. 컬렉션(Collection)
    - List / ArrayList
    - DTO와 함께 쓰는 ArrayList
    - Set / HashSet / TreeSet
    - Map / HashMap
    - Properties
-3. [추가로 알아야 할 점](#3-추가로-알아야-할-점)
-4. [마무리 요약](#4-마무리-요약)
+3. 추가로 알아야 할 점
+4. 마무리 요약
 
 ---
 
