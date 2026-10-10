@@ -58,9 +58,37 @@ input::placeholder{color:var(--text-light);letter-spacing:.2px}
       <section style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.85rem;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
         <div style="display:flex;align-items:baseline;gap:.5rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);">
           <h3 style="font-size:1.05rem;font-weight:700;color:var(--text);white-space:nowrap;">Guestbook</h3>
+          <span style="font-size:.8rem;color:var(--text-light);white-space:nowrap;">{{ guestCount }}</span>
           <a href="guestbook.html" style="margin-left:auto;font-size:.78rem;color:var(--primary);white-space:nowrap;" style-hover="text-decoration:underline;">All</a>
         </div>
-        <div style="max-height:320px;overflow-y:auto;scrollbar-gutter:stable;"><div class="giscus"></div></div>
+        <form onSubmit="{{ submitGuest }}" style="display:flex;flex-direction:column;gap:.5rem;">
+          <input type="text" value="{{ guestInput }}" onInput="{{ onGuestInput }}" maxlength="120" placeholder="한 줄 메시지" aria-label="방명록 메시지" style="width:100%;padding:9px 16px;border:2px solid var(--primary);border-radius:25px;background:var(--bg-light);color:var(--text);font-size:.88rem;outline:none;">
+          <button type="submit" style="padding:8px 12px;border:2px solid var(--primary);background:var(--primary);color:#fff;border-radius:25px;cursor:pointer;font-size:.85rem;font-weight:600;white-space:nowrap;">남기기</button>
+          <p style="color:var(--text-light);font-size:.75rem;line-height:1.4;text-align:center;">GitHub 계정으로 남겨집니다.</p>
+        </form>
+        <ul style="list-style:none;display:flex;flex-direction:column;max-height:320px;overflow-y:auto;">
+          <sc-for list="{{ guests }}" as="g" hint-placeholder-count="0">
+            <li style="display:flex;gap:.6rem;align-items:flex-start;padding:.65rem 0;border-top:1px solid var(--border);">
+              <img src="{{ g.avatar }}" alt="" width="30" height="30" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;">
+              <div style="display:flex;flex-direction:column;gap:.15rem;min-width:0;flex:1;">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:.4rem;">
+                  <a href="{{ g.url }}" target="_blank" rel="noopener" style="font-weight:700;font-size:.85rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" style-hover="color:var(--primary);">{{ g.login }}</a>
+                  <span style="font-size:.72rem;color:var(--text-light);white-space:nowrap;">{{ g.date }}</span>
+                </div>
+                <p style="color:var(--text);font-size:.85rem;line-height:1.45;word-break:break-word;">{{ g.msg }}</p>
+              </div>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{ guestLoading }}" hint-placeholder-val="{{ false }}">
+          <p style="text-align:center;padding:.5rem 0;color:var(--text-light);font-size:.82rem;">불러오는 중…</p>
+        </sc-if>
+        <sc-if value="{{ guestError }}" hint-placeholder-val="{{ false }}">
+          <p style="text-align:center;padding:.5rem 0;color:var(--text-light);font-size:.82rem;">방명록을 불러오지 못했습니다.</p>
+        </sc-if>
+        <sc-if value="{{ noGuests }}" hint-placeholder-val="{{ false }}">
+          <p style="text-align:center;padding:.5rem 0;color:var(--text-light);font-size:.82rem;">아직 방문 기록이 없습니다.</p>
+        </sc-if>
       </section>
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);">
@@ -235,30 +263,35 @@ const GOAL_DATE = '2027-02-16';
 
 const getData = () => window.BLOG_DATA || { posts: [], modules: [] };
 
-const GISCUS = { repo: 'tjtndud2/my-blog', repoId: 'R_kgDOUGmA1g', category: 'Announcements', categoryId: 'DIC_kwDOUGmA1s4DHeN5' };
-const giscusTheme = (t) => t === 'dark' ? 'dark' : 'light';
-const loadGiscus = (theme) => {
-  const box = document.querySelector('.giscus');
-  if (!box || box.querySelector('script, iframe')) return;
-  const s = document.createElement('script');
-  s.src = 'https://giscus.app/client.js';
-  const attrs = { repo: GISCUS.repo, 'repo-id': GISCUS.repoId, category: GISCUS.category, 'category-id': GISCUS.categoryId, mapping: 'specific', term: 'guestbook', strict: '0', 'reactions-enabled': '1', 'emit-metadata': '0', 'input-position': 'top', theme: giscusTheme(theme), lang: 'ko', loading: 'lazy' };
-  for (const k in attrs) s.setAttribute('data-' + k, attrs[k]);
-  s.crossOrigin = 'anonymous';
-  s.async = true;
-  box.appendChild(s);
-};
-const syncGiscus = (theme) => {
-  const f = document.querySelector('iframe.giscus-frame');
-  if (f && f.contentWindow) f.contentWindow.postMessage({ giscus: { setConfig: { theme: giscusTheme(theme) } } }, 'https://giscus.app');
-};
+// giscus 방명록(GitHub Discussions, term: guestbook)을 공개 REST API로 읽기만 함 — 브라우저에 저장하지 않음
+const GUEST_API = 'https://api.github.com/repos/tjtndud2/my-blog/discussions';
+const plainText = (md) => String(md || '')
+  .replace(/<[^>]*>/g, '')
+  .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+  .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+  .replace(/[*_~`>#]+/g, '')
+  .replace(/\s+/g, ' ')
+  .trim();
+const fetchGuestbook = () =>
+  fetch(GUEST_API + '?per_page=100')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(list => {
+      const d = list.find(x => x.title === 'guestbook');
+      if (!d) return [];
+      return fetch(GUEST_API + '/' + d.number + '/comments?per_page=100')
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    })
+    .then(cs => cs
+      .filter(c => c.user)
+      .sort((a, b) => b.created_at.localeCompare(a.created_at))
+      .map(c => ({ id: c.id, login: c.user.login, avatar: c.user.avatar_url, url: c.user.html_url, msg: plainText(c.body), date: c.created_at.slice(0, 10).replace(/-/g, '.') })));
 
 class Component extends DCLogic {
   state = (() => {
     const n = new Date();
     let theme = '';
     try { theme = localStorage.getItem('theme') || ''; } catch (e) {}
-    return { month: n.getMonth(), year: n.getFullYear(), theme, today: 0, total: 0, profileName: 'tjtndud2' };
+    return { month: n.getMonth(), year: n.getFullYear(), theme, today: 0, total: 0, profileName: 'tjtndud2', guests: [], guestLoading: true, guestError: false, guestInput: '' };
   })();
   componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); }
   asideRef = React.createRef();
@@ -285,7 +318,9 @@ class Component extends DCLogic {
     if (!window.BLOG_DATA) { const t = setInterval(() => { if (window.BLOG_DATA) { clearInterval(t); this.forceUpdate(); } }, 50); }
     fetch('https://api.github.com/users/tjtndud2').then(r => r.ok ? r.json() : null).then(d => { if (d && d.name) this.setState({ profileName: d.name }); }).catch(() => {});
     document.documentElement.setAttribute('data-theme', this.state.theme);
-    loadGiscus(this.state.theme);
+    fetchGuestbook()
+      .then(guests => this.setState({ guests, guestLoading: false }))
+      .catch(() => this.setState({ guestLoading: false, guestError: true }));
     const key = this.todayKey();
     const K = 'sooyoungBlogVisits';
     let s = { date: key, today: 0, total: 0 };
@@ -351,7 +386,6 @@ class Component extends DCLogic {
         document.documentElement.setAttribute('data-theme', next);
         try { localStorage.setItem('theme', next); } catch (e) {}
         this.setState({ theme: next });
-        syncGiscus(next);
       },
       visitToday: this.state.today.toLocaleString('ko-KR'),
       visitTotal: this.state.total.toLocaleString('ko-KR'),
@@ -364,6 +398,19 @@ class Component extends DCLogic {
       projectItems: HOME_LISTS.project.slice(0, 3),
       projectEmpty: HOME_LISTS.project.length === 0,
       profileName: this.state.profileName,
+      guestInput: this.state.guestInput,
+      onGuestInput: (e) => this.setState({ guestInput: e.target.value }),
+      submitGuest: (e) => {
+        e.preventDefault();
+        const msg = this.state.guestInput.trim();
+        const go = () => { window.location.href = 'guestbook.html'; };
+        if (msg && navigator.clipboard) navigator.clipboard.writeText(msg).then(go, go); else go();
+      },
+      guests: this.state.guests,
+      guestCount: String(this.state.guests.length),
+      guestLoading: this.state.guestLoading,
+      guestError: this.state.guestError,
+      noGuests: !this.state.guestLoading && !this.state.guestError && this.state.guests.length === 0
     };
   }
 }
