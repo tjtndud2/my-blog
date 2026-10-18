@@ -4,6 +4,7 @@ title: "지금까지 배운 Git 정리"
 date: 2026-08-28
 summary: "오늘 배운 것"
 section: Study Notes
+module: Module 1
 categories: [Git]
 tags: [git, github, commit]
 ---
