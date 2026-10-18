@@ -124,6 +124,8 @@ input::placeholder{color:var(--text-light);letter-spacing:.2px}
           <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Vercel</span>
           <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#Java</span>
           <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#IntelliJ</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#MySQL</span>
+          <span style="background:var(--bg-light);color:var(--primary);border:1px solid var(--primary);padding:.15rem .6rem;border-radius:20px;font-size:.75rem;white-space:nowrap;">#SQL</span>
         </div>
       </section>
     </aside>
@@ -406,7 +408,7 @@ class Component extends DCLogic {
         const go = () => { window.location.href = 'guestbook.html'; };
         if (msg && navigator.clipboard) navigator.clipboard.writeText(msg).then(go, go); else go();
       },
-      guests: this.state.guests,
+      guests: this.state.guests.slice(0, 5), // 최신순 정렬된 목록에서 5개만 미리보기
       guestCount: String(this.state.guests.length),
       guestLoading: this.state.guestLoading,
       guestError: this.state.guestError,
