@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "협업을 대비해 Git 브랜치 전략 비교하고 내 블로그에 맞는 규칙 정하기"
+title: "[Git] 협업을 대비해 Git 브랜치 전략 비교하고 내 블로그에 맞는 규칙 정하기"
 date: 2026-08-31 20:00:00 +0900
 section: Study Notes
 module: Module 1
