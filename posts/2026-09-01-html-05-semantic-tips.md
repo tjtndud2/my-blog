@@ -1,6 +1,7 @@
 ---
 title: "[HTML] 05. 시맨틱 태그, 웹 접근성, 실무 팁과 치트시트"
 date: 2026-09-01
+time: "09:05"
 section: Study Notes
 module: Module 1
 categories: [HTML, Frontend]
