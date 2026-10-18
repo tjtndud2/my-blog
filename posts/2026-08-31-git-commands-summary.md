@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "이번 주 Git 핵심 명령어 정리"
+title: "[Git] 이번 주 Git 핵심 명령어 정리"
 date: 2026-08-31
 section: Study Notes
 module: Module 1
