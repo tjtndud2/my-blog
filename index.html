@@ -44,15 +44,15 @@ input::placeholder{color:var(--text-light);letter-spacing:.2px}
           <span style="display:flex;align-items:center;gap:.3rem;font-size:.8rem;color:var(--text-light);white-space:nowrap;"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>@tjtndud2</span>
         </div>
       </a>
-        <a href="https://music.apple.com/kr/song/beat-yourself-up/1845189973" target="_blank" rel="noopener" title="오늘의 추천곡" style="display:flex;align-items:center;gap:.45rem;padding:.5rem .6rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.8rem;color:var(--text-light);min-width:0;" style-hover="color:var(--primary);border-color:var(--primary);">
+        <a href="{{ songUrl }}" target="_blank" rel="noopener" title="오늘의 추천곡" style="display:flex;align-items:center;gap:.45rem;padding:.5rem .6rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.8rem;color:var(--text-light);min-width:0;" style-hover="color:var(--primary);border-color:var(--primary);">
           <span style="display:flex;color:var(--primary);"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
           <span style="flex-shrink:0;font-weight:600;white-space:nowrap;">오늘의 추천곡</span>
-          <span style="flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text);">Charlie-Puth - Beat-Yourself-Up</span>
+          <span style="flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text);">{{ songTitle }}</span>
         </a>
-        <a href="https://map.naver.com/p/entry/place/1018751094?c=18.80,0,0,0,dh" target="_blank" rel="noopener" title="오늘의 추천 음식" style="display:flex;align-items:center;gap:.45rem;padding:.5rem .6rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.8rem;color:var(--text-light);min-width:0;margin-top:-.3rem;" style-hover="color:var(--primary);border-color:var(--primary);">
+        <a href="{{ foodUrl }}" target="_blank" rel="noopener" title="오늘의 추천 음식" style="display:flex;align-items:center;gap:.45rem;padding:.5rem .6rem;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:.8rem;color:var(--text-light);min-width:0;margin-top:-.3rem;" style-hover="color:var(--primary);border-color:var(--primary);">
           <span style="display:flex;color:var(--primary);"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M3 11h18a9 9 0 0 1-18 0z"></path><path d="M8 7c0-1 1-1.5 1-2.5M12 7c0-1 1-1.5 1-2.5M16 7c0-1 1-1.5 1-2.5"></path></svg></span>
           <span style="flex-shrink:0;font-weight:600;white-space:nowrap;">오늘의 추천 음식</span>
-          <span style="flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text);">백짬뽕</span>
+          <span style="flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text);">{{ foodTitle }}</span>
         </a>
       </div>
       <section style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.85rem;transition:box-shadow .25s;" style-hover="box-shadow:var(--shadow-lg);">
@@ -288,12 +288,31 @@ const fetchGuestbook = () =>
       .sort((a, b) => b.created_at.localeCompare(a.created_at))
       .map(c => ({ id: c.id, login: c.user.login, avatar: c.user.avatar_url, url: c.user.html_url, msg: plainText(c.body), date: c.created_at.slice(0, 10).replace(/-/g, '.') })));
 
+// 오늘의 추천곡·음식: data/recommendations.json 목록에서 날짜 기준으로 하나씩 고름 (같은 날엔 새로고침해도 같은 항목)
+const RECO_URL = './data/recommendations.json';
+// '//'로 시작하는 줄(추가용으로 미리 적어둔 빈 틀)은 건너뛰고 읽음, title·url이 빈 항목도 제외
+const parseReco = (text) => {
+  const d = JSON.parse(text.split(/\r?\n/).filter(line => !/^\s*\/\//.test(line)).join('\n'));
+  const valid = (list) => (Array.isArray(list) ? list : []).filter(x => x && String(x.title || '').trim() && String(x.url || '').trim());
+  return { songs: valid(d.songs), foods: valid(d.foods) };
+};
+const pickToday = (list, dayKey, salt) => {
+  if (!Array.isArray(list) || !list.length) return null;
+  let h = 0;
+  for (const ch of dayKey + salt) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  // 연속된 날짜가 순서대로 돌지 않도록 한 번 더 섞음
+  h = (h ^ (h >>> 16)) >>> 0;
+  h = Math.imul(h, 0x45d9f3b) >>> 0;
+  h = (h ^ (h >>> 16)) >>> 0;
+  return list[h % list.length];
+};
+
 class Component extends DCLogic {
   state = (() => {
     const n = new Date();
     let theme = '';
     try { theme = localStorage.getItem('theme') || ''; } catch (e) {}
-    return { month: n.getMonth(), year: n.getFullYear(), theme, today: 0, total: 0, profileName: 'tjtndud2', guests: [], guestLoading: true, guestError: false, guestInput: '' };
+    return { month: n.getMonth(), year: n.getFullYear(), theme, today: 0, total: 0, profileName: 'tjtndud2', guests: [], guestLoading: true, guestError: false, guestInput: '', song: null, food: null };
   })();
   componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); }
   asideRef = React.createRef();
@@ -324,6 +343,11 @@ class Component extends DCLogic {
       .then(guests => this.setState({ guests, guestLoading: false }))
       .catch(() => this.setState({ guestLoading: false, guestError: true }));
     const key = this.todayKey();
+    fetch(RECO_URL, { cache: 'no-cache' })
+      .then(r => r.ok ? r.text() : null)
+      .then(t => t && parseReco(t))
+      .then(d => { if (d) this.setState({ song: pickToday(d.songs, key, 'song'), food: pickToday(d.foods, key, 'food') }); })
+      .catch(() => {});
     const K = 'sooyoungBlogVisits';
     let s = { date: key, today: 0, total: 0 };
     try { const p = JSON.parse(localStorage.getItem(K) || 'null'); if (p && typeof p.total === 'number') s = p; } catch (e) {}
@@ -377,7 +401,12 @@ class Component extends DCLogic {
       if (mo < 0) { mo = 11; yr--; } if (mo > 11) { mo = 0; yr++; }
       return { month: mo, year: yr };
     });
+    const { song, food } = this.state;
     return {
+      songTitle: song ? song.title : '…',
+      songUrl: song ? song.url : '#',
+      foodTitle: food ? food.title : '…',
+      foodUrl: food ? food.url : '#',
       asideRef: this.asideRef,
       atBottom: !!this.state.atBottom,
       toTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
