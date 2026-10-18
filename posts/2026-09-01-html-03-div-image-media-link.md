@@ -1,6 +1,7 @@
 ---
 title: "[HTML] 03. 영역(div/span), 이미지, 미디어, 하이퍼링크"
 date: 2026-09-01
+time: "09:03"
 section: Study Notes
 module: Module 1
 categories: [HTML, Frontend]

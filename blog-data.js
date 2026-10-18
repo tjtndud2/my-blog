@@ -4,6 +4,7 @@
 // ---
 // title: "글 제목"
 // date: 2026-09-30
+// time: "09:05"               (선택, 같은 날짜 글은 블로그 목록에서 늦은 시간이 위로)
 // section: Study Notes        (Study Notes | Assignments | Projects, 생략 시 Study Notes)
 // categories: [Git]           (Jekyll 형식도 지원)
 // category: Git               (선택)
@@ -53,6 +54,7 @@
       url: POSTS_DIR + file,
       title: meta.title || heading || file.replace(/\.md$/, ''),
       date: String(meta.date || dateFromName).slice(0, 10),
+      time: meta.time || '',
       section: meta.section || 'Study Notes',
       module: meta.module || '',
       category: meta.category || (Array.isArray(meta.categories) ? meta.categories[0] : meta.categories) || '',
@@ -65,8 +67,8 @@
   window.BlogMD = { parseFrontMatter, toPost, POSTS_DIR };
 
   function publish(posts) {
-    // 날짜 최신순, 같은 날짜는 posts/index.json 순서대로
-    posts.sort((a, b) => b.date.localeCompare(a.date) || a.order - b.order);
+    // 날짜 최신순, 같은 날짜는 time이 늦은 글 먼저, 그다음 posts/index.json 순서대로 (모듈 페이지는 index.json 순서만 사용)
+    posts.sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time) || a.order - b.order);
     window.BLOG_DATA = { modules: MODULES, posts };
     window.dispatchEvent(new Event('blogdata'));
   }

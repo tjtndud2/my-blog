@@ -1,6 +1,7 @@
 ---
 title: "[HTML] 02. 목록 태그와 표 태그 (셀 병합까지)"
 date: 2026-09-01
+time: "09:02"
 section: Study Notes
 module: Module 1
 categories: [HTML, Frontend]
