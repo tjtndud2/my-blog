@@ -282,7 +282,7 @@ const fetchGuestbook = () =>
         .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
     })
     .then(cs => cs
-      .filter(c => c.user)
+      .filter(c => c.user && !c.parent_id) // 답글(parent_id 있음)은 빼고 원본 댓글만
       .sort((a, b) => b.created_at.localeCompare(a.created_at))
       .map(c => ({ id: c.id, login: c.user.login, avatar: c.user.avatar_url, url: c.user.html_url, msg: plainText(c.body), date: c.created_at.slice(0, 10).replace(/-/g, '.') })));
 
