@@ -21,5 +21,8 @@
   "2026-10-09-java-generic-and-collection.md",
   "2026-10-09-java-exception-file-io.md",
   "2026-10-10-washed-project-retrospective.md",
-  "2026-10-18-mysql-sql-basics.md"
+  "2026-10-18-mysql-sql-basics.md",
+  "2026-10-20-jdbc-01-connection.md",
+  "2026-10-20-jdbc-02-statement.md",
+  "2026-10-20-jdbc-03-crud-layered.md"
 ]
