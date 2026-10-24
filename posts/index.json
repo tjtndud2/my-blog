@@ -24,5 +24,10 @@
   "2026-10-18-mysql-sql-basics.md",
   "2026-10-20-jdbc-01-connection.md",
   "2026-10-20-jdbc-02-statement.md",
-  "2026-10-20-jdbc-03-crud-layered.md"
+  "2026-10-20-jdbc-03-crud-layered.md",
+  "2026-10-23-servlet-01-lifecycle.md",
+  "2026-10-23-servlet-02-request-response.md",
+  "2026-10-23-servlet-03-forward-redirect.md",
+  "2026-10-23-servlet-04-cookie-session.md",
+  "2026-10-23-servlet-05-filter.md"
 ]
