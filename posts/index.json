@@ -29,5 +29,7 @@
   "2026-10-23-servlet-02-request-response.md",
   "2026-10-23-servlet-03-forward-redirect.md",
   "2026-10-23-servlet-04-cookie-session.md",
-  "2026-10-23-servlet-05-filter.md"
+  "2026-10-23-servlet-05-filter.md",
+  "2026-10-26-spring-01-ioc-container.md",
+  "2026-10-26-spring-02-di.md"
 ]
