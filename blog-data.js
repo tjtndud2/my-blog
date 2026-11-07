@@ -15,8 +15,8 @@
 (function () {
   const MODULES = [
     { title: 'Module 1', period: '2026.08.26 ~ 2026.09.23' },
-    { title: 'Module 2', period: '2026.09.28 ~' },
-    { title: 'Module 3', period: '' },
+    { title: 'Module 2', period: '2026.09.28 ~ 2026.11.13' },
+    { title: 'Module 3', period: '2026.11.16 ~' },
     { title: 'Module 4', period: '' },
     { title: 'Module 5', period: '' }
   ];
