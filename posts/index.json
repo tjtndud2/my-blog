@@ -31,5 +31,13 @@
   "2026-10-23-servlet-04-cookie-session.md",
   "2026-10-23-servlet-05-filter.md",
   "2026-10-26-spring-01-ioc-container.md",
-  "2026-10-26-spring-02-di.md"
+  "2026-10-26-spring-02-di.md",
+  "2026-10-27-spring-03-aop.md",
+  "2026-10-30-spring-mvc-01-request-mapping.md",
+  "2026-10-30-spring-mvc-02-handler-method.md",
+  "2026-10-30-spring-mvc-03-view-resolver.md",
+  "2026-10-30-spring-mvc-04-exception-handler.md",
+  "2026-10-30-spring-mvc-05-interceptor.md",
+  "2026-10-30-spring-mvc-06-file-upload.md",
+  "2026-10-30-spring-mvc-07-thymeleaf.md"
 ]
