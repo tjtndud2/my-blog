@@ -39,5 +39,9 @@
   "2026-10-30-spring-mvc-04-exception-handler.md",
   "2026-10-30-spring-mvc-05-interceptor.md",
   "2026-10-30-spring-mvc-06-file-upload.md",
-  "2026-10-30-spring-mvc-07-thymeleaf.md"
+  "2026-10-30-spring-mvc-07-thymeleaf.md",
+  "2026-11-02-jpa-01-intro.md",
+  "2026-11-02-jpa-02-persistence-context.md",
+  "2026-11-03-jpa-03-entity-mapping.md",
+  "2026-11-04-jpa-04-mini-project.md"
 ]
